@@ -1,15 +1,13 @@
 'use strict';
 
-window.onload = () => {
-    console.log('Welcome to Rocka\'s Node Blog! ');
-
-    var ul = document.getElementsByTagName('ul')[0];
+function loadArticleList() {
+    var ul = document.getElementById('index-article-list');
 
     function success(response) {
         var resData = JSON.parse(response);
         resData.forEach((title) => {
             var newLine = document.createElement('li');
-            newLine.innerHTML = `<a href="javascript:void(0);">${title}</a>`;
+            newLine.innerHTML = `<a href="javascript:loadArticleContent('${title}');">${title}</a>`;
             ul.appendChild(newLine);
         });
     }
@@ -27,7 +25,6 @@ window.onload = () => {
             // response result:
             if (request.status === 200) {
                 // succeed: update article
-                console.log(request.response);
                 return success(request.response);
             } else {
                 // failed: show error code
@@ -39,4 +36,37 @@ window.onload = () => {
     // send request
     request.open('GET', '/api/index-article-list');
     request.send();
+}
+
+function loadArticleContent(articleTitle) {
+    var bq = document.getElementById('index-article-content');
+
+    function success(response) {
+        bq.innerText = response;
+    }
+
+    function fail(code) {
+        bq.innerText = 'Article Load Faild: Please Refresh Page And Try Again.';
+        bq.innerText += `Error Code: ${code}`;
+    }
+
+    var request = new XMLHttpRequest();
+
+    request.onreadystatechange = () => {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                return success(request.response);
+            } else {
+                return fail(request.status);
+            }
+        }
+    }
+
+    request.open('GET', `/archive/${articleTitle}`);
+    request.send();
+}
+
+window.onload = () => {
+    console.log('Welcome to Rocka\'s Node Blog! ');
+    loadArticleList();
 }
