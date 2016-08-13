@@ -4,8 +4,6 @@ window.onload = () => {
     console.log('Welcome to Rocka\'s Node Blog! ');
 
     var ul = document.getElementsByTagName('ul')[0];
-    var bq = document.createElement('blockquote');
-    document.body.appendChild(bq);
 
     function success(response) {
         var resData = JSON.parse(response);
