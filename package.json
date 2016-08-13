@@ -1,0 +1,19 @@
+{
+  "name": "node-server-test",
+  "version": "1.0.0",
+  "description": "my 1st node server",
+  "engines": {
+    "node": "6.3.1",
+    "npm": "3.10.3"
+  },
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rocket1184/NodeServerTest.git"
+  },
+  "author": "r0cka",
+  "license": "MIT"
+}
