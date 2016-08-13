@@ -5,7 +5,7 @@ const path = require('path');
 const url = require('url');
 const fs = require('fs');
 
-var root = path.resolve(process.argv[2] || '.');
+var root = path.resolve('.');
 
 var server = http.createServer((request, response) => {
     console.log(`[Rocka Node Server] ${request.method}: ${request.url}`);
