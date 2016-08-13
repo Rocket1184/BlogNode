@@ -1,17 +1,52 @@
 'use strict';
 
-var http = require('http');
-var fs = require('fs');
+const http = require('http');
+const path = require('path');
+const url = require('url');
+const fs = require('fs');
+
+var root = path.resolve(process.argv[2] || '.');
 
 var server = http.createServer((request, response) => {
-    console.log(request.method + ': ' + request.url);
+    console.log(`[Rocka Node Server] ${request.method}: ${request.url}`);
+    var pathName = url.parse(request.url).pathname;
+    var filePath = path.join(root, pathName);
+    console.log(`pathName: ${pathName}, filePath: ${filePath}`);
     if (request.method === 'GET') {
-        if (request.url === '/favicon.ico') {
-            fs.createReadStream('./favicon.ico').pipe(response);
+        if (pathName.indexOf('/api/') >= 0) {
+            switch (pathName) {
+                case '/api/index-article-list':
+                    fs.readdir('./archive', (err, files) => {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log(files);
+                            response.writeHead(200, { 'Content-Type': 'application/json' });
+                            response.end(JSON.stringify(files));
+                        }
+                    });
+                    break;
+                default:
+                    break;
+            }
         } else {
-            response.writeHead(200, { 'Content-Type': 'text/html' });
-            fs.createReadStream('./404.html').pipe(response);
+            fs.stat(filePath, (err, stats) => {
+                if (!err && stats.isFile()) {
+                    response.writeHead(200, { 'Content-Type': 'text/html' });
+                    fs.createReadStream(filePath).pipe(response);
+                } else if (!err && pathName == '/') {
+                    response.writeHead(200, { 'Content-Type': 'text/html' });
+                    fs.createReadStream('./page/index.html').pipe(response);
+                } else if (!err && !stats.isFile()) {
+                    response.writeHead(200, { 'Content-Type': 'text/html' });
+                    fs.createReadStream('./page/404.html').pipe(response);
+                } else if (err) {
+                    response.writeHead(500);
+                    response.end(err.toString());
+                }
+            });
         }
+
     }
 });
 
