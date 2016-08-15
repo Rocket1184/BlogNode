@@ -5,6 +5,8 @@ const path = require('path');
 const url = require('url');
 const fs = require('fs');
 
+const NeteaseApi = require('./NeteaseApiAndroid');
+
 var root = path.resolve('.');
 
 var server = http.createServer((request, response) => {
@@ -25,6 +27,48 @@ var server = http.createServer((request, response) => {
                         } else {
                             response.writeHead(200, { 'Content-Type': 'application/json' });
                             response.end(JSON.stringify(files));
+                        }
+                    });
+                    break;
+                case '/api/music-record':
+                    fs.stat(NeteaseApi.fileName(), (err, stats) => {
+                        if (stats.ifFile()) {
+                            var now = Date.now();
+                            if (now - stats.mtime >= 3600 * 1000) {
+                                NeteaseApi.updateData((fName) => {
+                                    fs.readFile(fName, (err, data) => {
+                                        if (err) {
+                                            response.writeHead(400, { 'Content-Type': 'application/json' });
+                                            response.end(JSON.stringify(err));
+                                        } else {
+                                            response.writeHead(200, { 'Content-Type': 'application/json' });
+                                            response.end(JSON.stringify(data));
+                                        }
+                                    });
+                                });
+                            } else {
+                                fs.readFile(fName, (err, data) => {
+                                    if (err) {
+                                        response.writeHead(400, { 'Content-Type': 'application/json' });
+                                        response.end(JSON.stringify(err));
+                                    } else {
+                                        response.writeHead(200, { 'Content-Type': 'application/json' });
+                                        response.end(JSON.stringify(data));
+                                    }
+                                });
+                            }
+                        } else {
+                            NeteaseApi.updateData((fName) => {
+                                fs.readFile(fName, (err, data) => {
+                                    if (err) {
+                                        response.writeHead(400, { 'Content-Type': 'application/json' });
+                                        response.end(JSON.stringify(err));
+                                    } else {
+                                        response.writeHead(200, { 'Content-Type': 'application/json' });
+                                        response.end(JSON.stringify(data));
+                                    }
+                                })
+                            });
                         }
                     });
                     break;
