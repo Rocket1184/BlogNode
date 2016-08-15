@@ -66,7 +66,46 @@ function loadArticleContent(articleTitle) {
     request.send();
 }
 
+function loadMusicRecord() {
+    var ul = document.getElementById('index-music-record');
+
+    function success(data) {
+        var rawList = data.listenedSongs;
+        rawList.forEach((value, index) => {
+            if(index>9) return;
+            var li = document.createElement('li');
+            var a = document.createElement('a');
+            a.innerText = `${value.name} - ${value.artists[0].name}`;
+            a.setAttribute('href', `http://music.163.com/#/song?id=${value.id}`);
+            a.setAttribute('target', '_blank');
+            li.appendChild(a);
+            ul.appendChild(li);
+        });
+    }
+
+    function fail(code) {
+        ul.innerText = 'Article Load Faild: Please Refresh Page And Try Again.';
+        ul.innerText += `Error Code: ${code}`;
+    }
+
+    var request = new XMLHttpRequest();
+
+    request.onreadystatechange = () => {
+        if (request.readyState === 4) {
+            if (request.status === 200) {
+                return success(JSON.parse(request.response)['/api/user/detail/76980626']);
+            } else {
+                return fail(request.status);
+            }
+        }
+    }
+
+    request.open('GET', `/api/music-record`);
+    request.send();
+}
+
 window.onload = () => {
     console.log('Welcome to Rocka\'s Node Blog! ');
     loadArticleList();
+    loadMusicRecord();
 }
