@@ -32,7 +32,7 @@ var server = http.createServer((request, response) => {
                     break;
                 case '/api/music-record':
                     fs.stat(NeteaseApi.fileName(), (err, stats) => {
-                        if (stats.ifFile()) {
+                        if (!err) {
                             var now = Date.now();
                             if (now - stats.mtime >= 3600 * 1000) {
                                 NeteaseApi.updateData((fName) => {
