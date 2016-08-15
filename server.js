@@ -9,6 +9,18 @@ const NeteaseApi = require('./NeteaseApiAndroid');
 
 var root = path.resolve('.');
 
+function sendMusicRecord(fileName, response) {
+    fs.readFile(fileName, (err, data) => {
+        if (err) {
+            response.writeHead(400, { 'Content-Type': 'application/json' });
+            response.end(JSON.stringify(err));
+        } else {
+            response.writeHead(200, { 'Content-Type': 'application/json' });
+            response.end(JSON.stringify(data));
+        }
+    });
+}
+
 var server = http.createServer((request, response) => {
     console.log(`[Rocka Node Server] ${request.method}: ${request.url}`);
     // path name in url
@@ -36,38 +48,14 @@ var server = http.createServer((request, response) => {
                             var now = Date.now();
                             if (now - stats.mtime >= 3600 * 1000) {
                                 NeteaseApi.updateData((fName) => {
-                                    fs.readFile(fName, (err, data) => {
-                                        if (err) {
-                                            response.writeHead(400, { 'Content-Type': 'application/json' });
-                                            response.end(JSON.stringify(err));
-                                        } else {
-                                            response.writeHead(200, { 'Content-Type': 'application/json' });
-                                            response.end(JSON.stringify(data));
-                                        }
-                                    });
+                                    sendMusicRecord(fName, response);
                                 });
                             } else {
-                                fs.readFile(fName, (err, data) => {
-                                    if (err) {
-                                        response.writeHead(400, { 'Content-Type': 'application/json' });
-                                        response.end(JSON.stringify(err));
-                                    } else {
-                                        response.writeHead(200, { 'Content-Type': 'application/json' });
-                                        response.end(JSON.stringify(data));
-                                    }
-                                });
+                                sendMusicRecord(NeteaseApi.fileName(), response);
                             }
                         } else {
                             NeteaseApi.updateData((fName) => {
-                                fs.readFile(fName, (err, data) => {
-                                    if (err) {
-                                        response.writeHead(400, { 'Content-Type': 'application/json' });
-                                        response.end(JSON.stringify(err));
-                                    } else {
-                                        response.writeHead(200, { 'Content-Type': 'application/json' });
-                                        response.end(JSON.stringify(data));
-                                    }
-                                })
+                                sendMusicRecord(fName, response);
                             });
                         }
                     });
@@ -82,15 +70,15 @@ var server = http.createServer((request, response) => {
                 if (!err && stats.isFile()) {
                     response.writeHead(200, { 'Content-Type': 'text/html' });
                     fs.createReadStream(filePath).pipe(response);
-                // cannot find file, but received index request
+                    // cannot find file, but received index request
                 } else if (!err && pathName == '/') {
                     response.writeHead(200, { 'Content-Type': 'text/html' });
                     fs.createReadStream('./page/index.html').pipe(response);
-                // file not found
+                    // file not found
                 } else if (!err && !stats.isFile()) {
                     response.writeHead(200, { 'Content-Type': 'text/html' });
                     fs.createReadStream('./page/404.html').pipe(response);
-                // error :(
+                    // error :(
                 } else if (err) {
                     response.writeHead(500);
                     response.end(err.toString());
