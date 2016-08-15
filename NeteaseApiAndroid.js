@@ -28,7 +28,7 @@ function fileName(name) {
     } else return name;
 }
 
-function getRecord() {
+function getRecord(callback) {
     var output = fs.createWriteStream(outputFileName);
 
     var req = http.request(options);
@@ -39,9 +39,7 @@ function getRecord() {
         console.log('[Netease API] Record Data Received!');
         console.log('[Netease API] Record Response Header: ' + JSON.stringify(response.headers));
         response.pipe(zlib.createGunzip()).pipe(output);
-        fs.readFile(outputFileName, (err, data) => {
-            console.log(`[Netease API] ${data}`);
-        })
+        callback && callback(outputFileName);
     })
 
     req.on('error', (para) => {
