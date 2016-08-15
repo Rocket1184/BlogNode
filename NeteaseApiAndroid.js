@@ -25,7 +25,7 @@ var options = {
 function fileName(name) {
     if (name) {
         return outputFileName = name;
-    } else return name;
+    } else return outputFileName;
 }
 
 function getRecord(callback) {
