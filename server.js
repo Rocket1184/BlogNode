@@ -16,7 +16,7 @@ function sendMusicRecord(fileName, response) {
             response.end(JSON.stringify(err));
         } else {
             response.writeHead(200, { 'Content-Type': 'application/json' });
-            response.end(JSON.stringify(data));
+            response.end(data);
         }
     });
 }
