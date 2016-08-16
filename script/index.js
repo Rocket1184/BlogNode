@@ -38,10 +38,13 @@ function loadArticleList() {
     request.send();
 }
 
-function loadArticleContent(articleTitle) {
+function loadArticleContent(articleTitle, fromState) {
     var bq = document.getElementById('index-article-content');
 
     function success(response) {
+        if (!fromState) {
+            history.pushState({ originTitle: articleTitle }, articleTitle, `/archive/${articleTitle}`);
+        }
         bq.innerText = response;
     }
 
@@ -116,4 +119,10 @@ window.onload = () => {
     console.log('Welcome to Rocka\'s Node Blog! ');
     loadArticleList();
     loadMusicRecord();
+}
+
+window.onpopstate = (e) => {
+    if (e.state) {
+        loadArticleContent(e.state.originTitle, true);
+    }
 }
