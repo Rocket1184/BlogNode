@@ -21,7 +21,7 @@ function sendMusicRecord(fileName, response) {
     });
 }
 
-NeteaseApi.init(76980626, 0);
+NeteaseApi.init(76980626, 4 * 3600 * 1000);
 
 var server = http.createServer((request, response) => {
     console.log(`[Rocka Node Server] ${request.method}: ${request.url}`);
