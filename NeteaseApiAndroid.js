@@ -5,8 +5,10 @@ const fs = require('fs');
 const http = require("http");
 const zlib = require('zlib');
 
-var outputFileName = 'netease_record.json';
-
+var outputFileName;
+var expireTime;
+var userId;
+var inited = false;
 var options = {
     "protocol": 'http:',
     "method": "POST",
@@ -22,36 +24,55 @@ var options = {
     }
 };
 
-function fileName(name) {
-    if (name) {
-        return outputFileName = name;
-    } else return outputFileName;
+function init(id, fName, eTime) {
+    userId = id;
+    expireTime = eTime;
+    outputFileName = `netease_music_record_${id}.json`;
+    inited = true;
 }
 
-function getRecord(callback) {
+function updateData(callback) {
     var output = fs.createWriteStream(outputFileName);
 
     var req = http.request(options);
-
-    req.write(qs.stringify({ '/api/user/detail/76980626': '{\'all\':true}' }));
+    var qString = new Map();
+    qString[`/api/user/detail/${userId}`] = '{\'all\':true}';
+    req.write(qs.stringify(qString));
 
     req.on('response', (response) => {
         console.log('[Netease API] Record Data Received!');
         console.log('[Netease API] Record Response Header: ' + JSON.stringify(response.headers));
         response.pipe(zlib.createGunzip()).pipe(output);
         callback && callback(outputFileName);
-    })
+    });
 
     req.on('error', (para) => {
         console.log(`[Netease API] ${para.message}`);
-    })
+    });
 
     req.end();
 
     console.log(`[Netease API] Get Record Request Sent!`);
 }
 
+function get(callback) {
+    fs.stat(outputFileName, (err, stats) => {
+        // error occurs or data expire
+        if (err || now - stats.mtime < expireTime) {
+            updateData((fName) => {
+                fs.readFile(fName, (err, data) => {
+                    callback && callback(JSON.parse(data));
+                });
+            });
+        } else {
+            fs.readFile(outputFileName, (err, data) => {
+                callback && callback(JSON.parse(data));
+            })
+        }
+    });
+}
+
 module.exports = {
-    fileName: fileName,
-    updateData: getRecord
+    init: init,
+    get: get
 }
