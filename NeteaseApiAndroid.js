@@ -24,7 +24,7 @@ var options = {
     }
 };
 
-function init(id, fName, eTime) {
+function init(id, eTime) {
     userId = id;
     expireTime = eTime;
     outputFileName = `netease_music_record_${id}.json`;
@@ -57,16 +57,17 @@ function updateData(callback) {
 
 function get(callback) {
     fs.stat(outputFileName, (err, stats) => {
+        var now = Date.now();
         // error occurs or data expire
         if (err || now - stats.mtime < expireTime) {
             updateData((fName) => {
-                fs.readFile(fName, (err, data) => {
-                    callback && callback(JSON.parse(data));
+                fs.readFile(fName, 'utf8', (err, data) => {
+                    callback && callback((data.toString()));
                 });
             });
         } else {
-            fs.readFile(outputFileName, (err, data) => {
-                callback && callback(JSON.parse(data));
+            fs.readFile(outputFileName, 'utf8', (err, data) => {
+                callback && callback((data.toString()));
             })
         }
     });

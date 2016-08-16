@@ -21,6 +21,8 @@ function sendMusicRecord(fileName, response) {
     });
 }
 
+NeteaseApi.init(76980626, 0);
+
 var server = http.createServer((request, response) => {
     console.log(`[Rocka Node Server] ${request.method}: ${request.url}`);
     // path name in url
@@ -43,22 +45,10 @@ var server = http.createServer((request, response) => {
                     });
                     break;
                 case '/api/music-record':
-                    fs.stat(NeteaseApi.fileName(), (err, stats) => {
-                        if (!err) {
-                            var now = Date.now();
-                            if (now - stats.mtime >= 3600 * 1000) {
-                                NeteaseApi.updateData((fName) => {
-                                    sendMusicRecord(fName, response);
-                                });
-                            } else {
-                                sendMusicRecord(NeteaseApi.fileName(), response);
-                            }
-                        } else {
-                            NeteaseApi.updateData((fName) => {
-                                sendMusicRecord(fName, response);
-                            });
-                        }
-                    });
+                    response.writeHead(200, { 'Content-Type': 'application/json' });
+                    NeteaseApi.get((data) => {
+                        response.end(data);
+                    })
                     break;
                 default:
                     break;
