@@ -43,7 +43,10 @@ function updateData(callback) {
         console.log('[Netease API] Record Data Received!');
         console.log('[Netease API] Record Response Header: ' + JSON.stringify(response.headers));
         response.pipe(zlib.createGunzip()).pipe(output);
-        callback && callback(outputFileName);
+        // nodejs IO efficiency
+        setTimeout(function() {
+            callback && callback(outputFileName);
+        }, 100);
     });
 
     req.on('error', (para) => {
