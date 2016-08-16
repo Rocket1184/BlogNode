@@ -13,7 +13,7 @@ function sendMusicRecord(fileName, response) {
     fs.readFile(fileName, (err, data) => {
         if (err) {
             response.writeHead(400, { 'Content-Type': 'application/json' });
-            response.end(JSON.stringify(err));
+            response.end(err.message);
         } else {
             response.writeHead(200, { 'Content-Type': 'application/json' });
             response.end(data);

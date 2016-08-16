@@ -69,10 +69,9 @@ function loadArticleContent(articleTitle) {
 function loadMusicRecord() {
     var ul = document.getElementById('index-music-record');
 
-    function success(data) {
-        var rawList = data.listenedSongs;
+    function success(rawList) {
         rawList.forEach((value, index) => {
-            if(index>9) return;
+            if (index > 9) return;
             var li = document.createElement('li');
             var a = document.createElement('a');
             a.innerText = `${value.name} - ${value.artists[0].name}`;
@@ -83,8 +82,12 @@ function loadMusicRecord() {
         });
     }
 
+    function showError(message) {
+        ul.innerText = message;
+    }
+
     function fail(code) {
-        ul.innerText = 'Article Load Faild: Please Refresh Page And Try Again.';
+        ul.innerText = 'Music Record Load Faild: Please Refresh Page And Try Again.';
         ul.innerText += `Error Code: ${code}`;
     }
 
@@ -93,7 +96,12 @@ function loadMusicRecord() {
     request.onreadystatechange = () => {
         if (request.readyState === 4) {
             if (request.status === 200) {
-                return success(JSON.parse(request.response)['/api/user/detail/76980626']);
+                try {
+                    var rawList = JSON.parse(request.response)['/api/user/detail/76980626'].listenedSongs;
+                } catch (e) {
+                    return showError(e.message);
+                }
+                return success(rawList);
             } else {
                 return fail(request.status);
             }
