@@ -77,7 +77,7 @@ function loadMusicRecord() {
             if (index > 9) return;
             var li = document.createElement('li');
             var a = document.createElement('a');
-            a.innerText = `${value.name} - ${value.artists[0].name}`;
+            a.innerText = `${value.name} - ${value.artistName}`;
             a.setAttribute('href', `http://music.163.com/#/song?id=${value.id}`);
             a.setAttribute('target', '_blank');
             li.appendChild(a);
@@ -100,7 +100,7 @@ function loadMusicRecord() {
         if (request.readyState === 4) {
             if (request.status === 200) {
                 try {
-                    var rawList = JSON.parse(request.response)['/api/user/detail/76980626'].listenedSongs;
+                    var rawList = JSON.parse(request.response);
                 } catch (e) {
                     return showError(e.message);
                 }

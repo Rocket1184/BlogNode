@@ -8,6 +8,7 @@ const zlib = require('zlib');
 var outputFileName;
 var expireTime;
 var userId;
+var bufJSON = new Array();
 var inited = false;
 var options = {
     "protocol": 'http:',
@@ -29,9 +30,10 @@ function init(id, eTime) {
     expireTime = eTime;
     outputFileName = `netease_music_record_${id}.json`;
     inited = true;
+    updateData();
 }
 
-function updateData(callback) {
+function updateData() {
     var output = fs.createWriteStream(outputFileName);
 
     var req = http.request(options);
@@ -43,10 +45,17 @@ function updateData(callback) {
         console.log('[Netease API] Record Data Received!');
         console.log('[Netease API] Record Response Header: ' + JSON.stringify(response.headers));
         response.pipe(zlib.createGunzip()).pipe(output);
-        // nodejs IO efficiency
-        setTimeout(function() {
-            callback && callback(outputFileName);
-        }, 100);
+        // wait for async file operation
+        output.on('finish',() => {
+            fs.readFile(outputFileName, (err, data) => {
+                var buf = JSON.parse(data.toString())['/api/user/detail/76980626'].listenedSongs;
+                bufJSON = new Array();
+                buf.forEach((value, index) => {
+                    if (index > 9) return;
+                    bufJSON.push({ id: value.id, name: value.name, artistName: value.artists[0].name });
+                });
+            });
+        });
     });
 
     req.on('error', (para) => {
@@ -59,20 +68,12 @@ function updateData(callback) {
 }
 
 function get(callback) {
+    var now = Date.now()
     fs.stat(outputFileName, (err, stats) => {
-        var now = Date.now();
-        // error occurs or data expire
-        if (err || now - stats.mtime < expireTime) {
-            updateData((fName) => {
-                fs.readFile(fName, 'utf8', (err, data) => {
-                    callback && callback((data.toString()));
-                });
-            });
-        } else {
-            fs.readFile(outputFileName, 'utf8', (err, data) => {
-                callback && callback((data.toString()));
-            })
+        if (err || now - stats.mtime > expireTime) {
+            updateData();
         }
+        callback && callback(JSON.stringify(bufJSON));
     });
 }
 
