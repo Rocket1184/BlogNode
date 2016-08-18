@@ -9,6 +9,7 @@ const NeteaseApi = require('./NeteaseApiAndroid');
 
 var root = path.resolve('.');
 var archiveJSON = new Array();
+var plainViewPage;
 
 fs.readFile(path.join(root, '/page/404.html'), (err, data) => {
     var versionRegex = /\$\{process\.versions\.node\}/;
@@ -16,6 +17,10 @@ fs.readFile(path.join(root, '/page/404.html'), (err, data) => {
     var current404 = data.toString().replace(versionRegex, nodeVersion);
     var page404 = fs.createWriteStream(path.join(root, '/page/current404.html'));
     page404.end(current404, 'utf8');
+});
+
+fs.readFile(path.join(root, '/page/view.html'), (err, data) => {
+    plainViewPage = data.toString();
 });
 
 function updateArchiveList() {
@@ -55,6 +60,7 @@ var server = http.createServer((request, response) => {
     // file path based on operation system
     var filePath = path.join(root, pathName);
     console.log(`[Rocka Node Server] pathName: ${pathName}, filePath: ${filePath}`);
+    console.log(`[Rocka Node Server] Request Header: ${JSON.stringify(request.headers)}`);
     if (request.method === 'GET') {
         // this is a api request
         if (pathName.indexOf('/api/') >= 0) {
@@ -72,21 +78,69 @@ var server = http.createServer((request, response) => {
                 default:
                     break;
             }
+        } else if (request.headers['pushstate-ajax']) {
+            response.writeHead(200, { 'content-Type': 'text/html' });
+            fs.createReadStream(filePath).pipe(response);
         } else {
-            // try to find and read local file
-            response.writeHead(200, { 'Content-Type': 'text/html' });
-            fs.stat(filePath, (err, stats) => {
-                // no error occured, read file
-                if (!err && stats.isFile()) {
-                    fs.createReadStream(filePath).pipe(response);
-                    // cannot find file, but received index request
-                } else if (!err && pathName == '/') {
-                    fs.createReadStream('./page/index.html').pipe(response);
-                    // file not found
-                } else {
-                    fs.createReadStream('./page/current404.html').pipe(response);
-                }
-            });
+            if (pathName.indexOf('/archive/') >= 0) {
+                var archiveRegex = /archive\/(.+)/;
+                var titleRegex = /\$\{archive\.title\}/;
+                var contentRegex = /\$\{archive\.content\}/;
+                var title = archiveRegex.exec(pathName)[1];
+                fs.readFile(path.join(root, pathName), (err, data) => {
+                    console.log(title);
+                    var page = plainViewPage;
+                    var page = page.replace(titleRegex, title);
+                    var page = page.replace(contentRegex, data.toString());
+                    response.end(page);
+                });
+            } else {
+                // try to find and read local file
+                fs.stat(filePath, (err, stats) => {
+                    // no error occured, read file
+                    if (!err && stats.isFile()) {
+                        var extRegex = /\w+\.(\w+)$/;
+                        var extName;
+                        try {
+                            extName = extRegex.exec(pathName)[1];
+                        } catch (e) { }
+                        var contentType;
+                        switch (extName) {
+                            case 'css':
+                                contentType = 'text/css';
+                                break;
+                            case 'js':
+                                contentType = 'application/x-javascript';
+                                break;
+                            case 'json':
+                                contentType = 'application/json';
+                                break;
+                            case 'jpg':
+                                contentType = 'image/jpeg';
+                                break;
+                            case 'html':
+                                contentType = 'text/html';
+                                break;
+                            case 'png':
+                                contentType = 'image/png';
+                                break;
+                            default:
+                                contentType = 'text/plain';
+                                break;
+                        }
+                        response.writeHead(200, { 'content-Type': contentType });
+                        fs.createReadStream(filePath).pipe(response);
+                        // cannot find file, but received index request
+                    } else if (!err && pathName == '/') {
+                        response.writeHead(200, { 'content-Type': 'text/html' });
+                        fs.createReadStream('./page/index.html').pipe(response);
+                        // file not found
+                    } else {
+                        response.writeHead(200, { 'content-Type': 'text/html' });
+                        fs.createReadStream('./page/current404.html').pipe(response);
+                    }
+                });
+            }
         }
     }
 });

@@ -4,17 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Rocka's Node Blog</title>
-    <link rel="stylesheet" href="../style/main.css" type="text/css">
+    <link rel="stylesheet" href="../style/main.css">
     <script src="../script/index.js"></script>
 </head>
 
 <body>
     <h1><a id="view-gotoIndex" href="javascript:void(0);">Rocka's Node Blog</a></h1>
     <hr>
-    <h3 id="index-article-title" class="hidden">Title should be shown here.</h3>
-    <blockquote id="index-article-content" class="hidden">Article should be shown here.</blockquote>
-    <h3 id="index-archive-header">Blog Archive</h3>
-    <ul id="index-article-list"></ul>
+    <h3 id="index-article-title">${archive.title}</h3>
+    <blockquote id="index-article-content">${archive.content}</blockquote>
+    <h3 id="index-archive-header" class="hidden">Blog Archive</h3>
+    <ul id="index-article-list" class="hidden"></ul>
     <h3>Rcecntly Listened</h3>
     <ul id="index-music-record"></ul>
 </body>

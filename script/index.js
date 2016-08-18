@@ -9,7 +9,7 @@ function loadArticleList() {
             var li = document.createElement('li');
             var a = document.createElement('a');
             var p = document.createElement('p');
-            p.innerHTML = `Summary: ${value.summary}...<br>posted@${value.ctime}`;
+            p.innerHTML = `Summary: ${value.summary}...&nbsp;<br>posted@${value.ctime}`;
             a.setAttribute('href', `javascript:loadArticleContent('${value.title}');`);
             a.innerText = value.title;
             li.appendChild(a);
@@ -45,13 +45,18 @@ function loadArticleList() {
 }
 
 function loadArticleContent(articleTitle, fromState) {
-    var bq = document.getElementById('index-article-content');
 
     function success(response) {
         if (!fromState) {
-            history.pushState({ originTitle: articleTitle }, articleTitle, `/archive/${articleTitle}`);
+            history.pushState({ originTitle: articleTitle, isIndex: false }, articleTitle, `/archive/${articleTitle}`);
         }
-        bq.innerText = response;
+        document.getElementById('index-article-title').classList.remove('hidden');
+        document.getElementById('index-article-content').classList.remove('hidden');
+        document.getElementById('index-archive-header').classList.add('hidden');
+        document.getElementById('index-article-list').classList.add('hidden');
+
+        document.getElementById('index-article-title').innerText = articleTitle;
+        document.getElementById('index-article-content').innerText = response;
     }
 
     function fail(code) {
@@ -72,6 +77,7 @@ function loadArticleContent(articleTitle, fromState) {
     }
 
     request.open('GET', `/archive/${articleTitle}`);
+    request.setRequestHeader('pushState-Ajax', true);
     request.send();
 }
 
@@ -121,14 +127,27 @@ function loadMusicRecord() {
     request.send();
 }
 
+function showIndex() {
+    document.getElementById('index-article-title').classList.add('hidden');
+    document.getElementById('index-article-content').classList.add('hidden');
+    document.getElementById('index-archive-header').classList.remove('hidden');
+    document.getElementById('index-article-list').classList.remove('hidden');
+}
+
 window.onload = () => {
     console.log('Welcome to Rocka\'s Node Blog! ');
     loadArticleList();
     loadMusicRecord();
+    document.getElementById('view-gotoIndex').onclick = () => {
+        history.pushState({ originTitle: '', isIndex: true }, '', '/');
+        showIndex();
+    }
 }
 
 window.onpopstate = (e) => {
-    if (e.state) {
+    if(!e.state || e.state.isIndex) {
+        showIndex();
+    } else {
         loadArticleContent(e.state.originTitle, true);
     }
 }
