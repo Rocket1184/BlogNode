@@ -9,6 +9,14 @@ const NeteaseApi = require('./NeteaseApiAndroid');
 
 var root = path.resolve('.');
 
+fs.readFile(path.join(root, '/page/404.html'), (err, data) => {
+    var versionRegex = /\$\{process\.versions\.node\}/;
+    var nodeVersion = process.versions.node;
+    var current404 = data.toString().replace(versionRegex, nodeVersion);
+    var page404 = fs.createWriteStream(path.join(root, '/page/current404.html'));
+    page404.end(current404, 'utf8');
+});
+
 function sendMusicRecord(fileName, response) {
     fs.readFile(fileName, (err, data) => {
         if (err) {
@@ -55,23 +63,17 @@ var server = http.createServer((request, response) => {
             }
         } else {
             // try to find and read local file
+            response.writeHead(200, { 'Content-Type': 'text/html' });
             fs.stat(filePath, (err, stats) => {
                 // no error occured, read file
                 if (!err && stats.isFile()) {
-                    response.writeHead(200, { 'Content-Type': 'text/html' });
                     fs.createReadStream(filePath).pipe(response);
                     // cannot find file, but received index request
                 } else if (!err && pathName == '/') {
-                    response.writeHead(200, { 'Content-Type': 'text/html' });
                     fs.createReadStream('./page/index.html').pipe(response);
                     // file not found
-                } else if (!err && !stats.isFile()) {
-                    response.writeHead(200, { 'Content-Type': 'text/html' });
-                    fs.createReadStream('./page/404.html').pipe(response);
-                    // error :(
-                } else if (err) {
-                    response.writeHead(500);
-                    response.end(err.toString());
+                } else {
+                    fs.createReadStream('./page/current404.html').pipe(response);
                 }
             });
         }
