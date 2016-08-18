@@ -46,7 +46,7 @@ function updateData() {
         console.log('[Netease API] Record Response Header: ' + JSON.stringify(response.headers));
         response.pipe(zlib.createGunzip()).pipe(output);
         // wait for async file operation
-        output.on('finish',() => {
+        output.on('finish', () => {
             fs.readFile(outputFileName, (err, data) => {
                 var buf = JSON.parse(data.toString())['/api/user/detail/76980626'].listenedSongs;
                 bufJSON = new Array();
@@ -62,9 +62,7 @@ function updateData() {
         console.log(`[Netease API] ${para.message}`);
     });
 
-    req.end();
-
-    console.log(`[Netease API] Get Record Request Sent!`);
+    req.end(x => console.log(`[Netease API] Get Record Request Sent!`));
 }
 
 function get(callback) {
