@@ -5,10 +5,16 @@ function loadArticleList() {
 
     function success(response) {
         var resData = JSON.parse(response);
-        resData.forEach((title) => {
-            var newLine = document.createElement('li');
-            newLine.innerHTML = `<a href="javascript:loadArticleContent('${title}');">${title}</a>`;
-            ul.appendChild(newLine);
+        resData.forEach((value, index) => {
+            var li = document.createElement('li');
+            var a = document.createElement('a');
+            var p = document.createElement('p');
+            p.innerHTML = `Summary: ${value.summary}...<br>posted@${value.ctime}`;
+            a.setAttribute('href', `javascript:loadArticleContent('${value.title}');`);
+            a.innerText = value.title;
+            li.appendChild(a);
+            li.appendChild(p)
+            ul.appendChild(li);
         });
     }
 

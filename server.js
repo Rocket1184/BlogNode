@@ -8,6 +8,7 @@ const fs = require('fs');
 const NeteaseApi = require('./NeteaseApiAndroid');
 
 var root = path.resolve('.');
+var archiveJSON = new Array();
 
 fs.readFile(path.join(root, '/page/404.html'), (err, data) => {
     var versionRegex = /\$\{process\.versions\.node\}/;
@@ -16,6 +17,20 @@ fs.readFile(path.join(root, '/page/404.html'), (err, data) => {
     var page404 = fs.createWriteStream(path.join(root, '/page/current404.html'));
     page404.end(current404, 'utf8');
 });
+
+function updateArchiveList() {
+    archiveJSON = new Array();
+    var pathName = path.join(root, '/archive');
+    fs.readdir(pathName, (err, files) => {
+        files.forEach((value, index) => {
+            fs.stat(path.join(pathName, value), (err, stat) => {
+                fs.readFile(path.join(pathName, value), (err, data) => {
+                    archiveJSON.push({ title: value, ctime: stat.ctime, summary: data.toString().substr(0, 10) });
+                });
+            });
+        });
+    });
+}
 
 function sendMusicRecord(fileName, response) {
     fs.readFile(fileName, (err, data) => {
@@ -31,6 +46,8 @@ function sendMusicRecord(fileName, response) {
 
 NeteaseApi.init(76980626, 4 * 3600 * 1000);
 
+updateArchiveList();
+
 var server = http.createServer((request, response) => {
     console.log(`[Rocka Node Server] ${request.method}: ${request.url}`);
     // path name in url
@@ -43,14 +60,8 @@ var server = http.createServer((request, response) => {
         if (pathName.indexOf('/api/') >= 0) {
             switch (pathName) {
                 case '/api/index-article-list':
-                    fs.readdir('./archive', (err, files) => {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            response.writeHead(200, { 'Content-Type': 'application/json' });
-                            response.end(JSON.stringify(files));
-                        }
-                    });
+                    response.writeHead(200, { 'Content-Type': 'application/json' });
+                    response.end(JSON.stringify(archiveJSON));
                     break;
                 case '/api/music-record':
                     response.writeHead(200, { 'Content-Type': 'application/json' });
