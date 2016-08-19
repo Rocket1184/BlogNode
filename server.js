@@ -24,6 +24,7 @@ fs.readFile(path.join(root, '/page/view.html'), (err, data) => {
 });
 
 function updateArchiveList() {
+    console.log(`[Node Server] Initializing Archive List...`);
     archiveJSON = new Array();
     var pathName = path.join(root, '/archive');
     fs.readdir(pathName, (err, files) => {
@@ -54,18 +55,19 @@ function sendMusicRecord(fileName, response) {
     });
 }
 
+console.log(`[Node Server] Initializing Netease Music Record...`);
 NeteaseApi.init(76980626, 4 * 3600 * 1000);
 
 updateArchiveList();
 
 var server = http.createServer((request, response) => {
-    console.log(`[Rocka Node Server] ${request.method}: ${request.url}`);
+    console.log(`[Node Server] ${request.method}: ${request.url}`);
     // path name in url
     var pathName = url.parse(request.url).pathname;
     // file path based on operation system
     var filePath = path.join(root, pathName);
-    console.log(`[Rocka Node Server] pathName: ${pathName}, filePath: ${filePath}`);
-    console.log(`[Rocka Node Server] Request Header: ${JSON.stringify(request.headers)}`);
+    console.log(`[Node Server] pathName: ${pathName}, filePath: ${filePath}`);
+    console.log(`[Node Server] Request Header: ${JSON.stringify(request.headers)}`);
     if (request.method === 'GET') {
         // this is a api request
         if (pathName.indexOf('/api/') >= 0) {
@@ -158,4 +160,4 @@ var serverPort = process.env.PORT || 5000;
 
 server.listen(serverPort);
 
-console.log(`[Rocka Node Server] Running at http://127.0.0.1:${serverPort}/`);
+console.log(`[Node Server] Running at http://127.0.0.1:${serverPort}/`);
