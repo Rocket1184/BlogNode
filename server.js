@@ -86,26 +86,33 @@ var server = http.createServer((request, response) => {
                     break;
             }
         } else if (request.headers['pushstate-ajax']) {
-            response.writeHead(200, { 'content-Type': 'text/html' });
-            fs.createReadStream(filePath).pipe(response);
+            fs.stat(filePath, (err, stat) => {
+                if (!err && stat.isFile()) {
+                    response.writeHead(200, { 'content-Type': 'text/html' });
+                    fs.createReadStream(filePath).pipe(response);
+                } else {
+                    response.writeHead(404, { 'content-Type': 'text/html' });
+                    response.end(err.message);
+                }
+            });
         } else {
-            if (pathName.indexOf('/archive/') >= 0) {
-                var archiveRegex = /archive\/(.+)/;
-                var titleRegex = /\$\{archive\.title\}/;
-                var contentRegex = /\$\{archive\.content\}/;
-                var title = archiveRegex.exec(pathName)[1];
-                fs.readFile(path.join(root, pathName), (err, data) => {
-                    console.log(title);
-                    var page = plainViewPage;
-                    var page = page.replace(titleRegex, title);
-                    var page = page.replace(contentRegex, data.toString());
-                    response.end(page);
-                });
-            } else {
-                // try to find and read local file
-                fs.stat(filePath, (err, stats) => {
-                    // no error occured, read file
-                    if (!err && stats.isFile()) {
+            // try to find and read local file
+            fs.stat(filePath, (err, stats) => {
+                // no error occured, read file
+                if (!err && stats.isFile()) {
+                    if (pathName.indexOf('/archive/') >= 0) {
+                        var archiveRegex = /archive\/(.+)/;
+                        var titleRegex = /\$\{archive\.title\}/;
+                        var contentRegex = /\$\{archive\.content\}/;
+                        var title = archiveRegex.exec(pathName)[1];
+                        fs.readFile(path.join(root, pathName), (err, data) => {
+                            console.log(title);
+                            var page = plainViewPage;
+                            var page = page.replace(titleRegex, title);
+                            var page = page.replace(contentRegex, data.toString());
+                            response.end(page);
+                        });
+                    } else {
                         var extRegex = /\w+\.(\w+)$/;
                         var extName;
                         try {
@@ -137,17 +144,18 @@ var server = http.createServer((request, response) => {
                         }
                         response.writeHead(200, { 'content-Type': contentType });
                         fs.createReadStream(filePath).pipe(response);
-                        // cannot find file, but received index request
-                    } else if (!err && pathName == '/') {
-                        response.writeHead(200, { 'content-Type': 'text/html' });
-                        fs.createReadStream('./page/index.html').pipe(response);
-                        // file not found
-                    } else {
-                        response.writeHead(200, { 'content-Type': 'text/html' });
-                        fs.createReadStream('./page/current404.html').pipe(response);
                     }
-                });
-            }
+                    // cannot find file, but received index request
+                } else if (!err && pathName == '/') {
+                    response.writeHead(200, { 'content-Type': 'text/html' });
+                    fs.createReadStream('./page/index.html').pipe(response);
+                    // file not found
+                } else {
+                    response.writeHead(200, { 'content-Type': 'text/html' });
+                    fs.createReadStream('./page/current404.html').pipe(response);
+                }
+            });
+
         }
     }
 });

@@ -48,7 +48,14 @@ function loadArticleContent(articleTitle, fromState) {
 
     function success(response) {
         if (!fromState) {
-            history.pushState({ originTitle: articleTitle, isIndex: false }, articleTitle, `/archive/${articleTitle}`);
+            history.pushState({
+                originTitle: articleTitle,
+                type: 'archive',
+                originPathName: window.location.pathname
+            },
+                articleTitle,
+                `/archive/${articleTitle}`
+            );
         }
         document.getElementById('index-article-title').classList.remove('hidden');
         document.getElementById('index-article-content').classList.remove('hidden');
@@ -139,15 +146,24 @@ window.onload = () => {
     loadArticleList();
     loadMusicRecord();
     document.getElementById('view-gotoIndex').onclick = () => {
-        history.pushState({ originTitle: '', isIndex: true }, '', '/');
+        history.pushState({ originTitle: '', type: 'index', originPathName: window.location.pathname }, '', '/');
         showIndex();
     }
 }
 
 window.onpopstate = (e) => {
-    if(!e.state || e.state.isIndex) {
+    if (!e.state) {
+        var pn = window.location.pathname;
+        var archiveRegex = /\/archive\/(.+)/
+        if (pn === '/') {
+            showIndex();
+        } else if (archiveRegex.test(pn)) {
+            loadArticleContent(archiveRegex.exec(pn)[1]);
+        }
+    }
+    else if (e.state.type === 'index') {
         showIndex();
-    } else {
+    } else if (e.state.type === 'archive') {
         loadArticleContent(e.state.originTitle, true);
     }
 }
