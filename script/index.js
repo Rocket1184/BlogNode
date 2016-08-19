@@ -10,7 +10,12 @@ function loadArticleList() {
             var a = document.createElement('a');
             var p = document.createElement('p');
             p.innerHTML = `Summary: ${value.summary}...&nbsp;<br>posted@${value.ctime}`;
-            a.setAttribute('href', `javascript:loadArticleContent('${value.title}');`);
+            // a.setAttribute('href', `javascript:loadArticleContent('${value.title}');`);
+            a.setAttribute('href', `/archive/${value.title}`);
+            a.onclick = e => {
+                e.preventDefault();
+                loadArticleContent(value.title);
+            }
             a.innerText = value.title;
             li.appendChild(a);
             li.appendChild(p)
