@@ -85,6 +85,7 @@ var server = http.createServer((request, response) => {
                 default:
                     break;
             }
+            // pjax request
         } else if (request.headers['pushstate-ajax']) {
             fs.stat(filePath, (err, stat) => {
                 if (!err && stat.isFile()) {
@@ -100,13 +101,13 @@ var server = http.createServer((request, response) => {
             fs.stat(filePath, (err, stats) => {
                 // no error occured, read file
                 if (!err && stats.isFile()) {
+                    // get archive by url, must render page on server
                     if (pathName.indexOf('/archive/') >= 0) {
                         var archiveRegex = /archive\/(.+)/;
                         var titleRegex = /\$\{archive\.title\}/;
                         var contentRegex = /\$\{archive\.content\}/;
                         var title = archiveRegex.exec(pathName)[1];
                         fs.readFile(path.join(root, pathName), (err, data) => {
-                            console.log(title);
                             var page = plainViewPage;
                             var page = page.replace(titleRegex, title);
                             var page = page.replace(contentRegex, data.toString());
