@@ -10,7 +10,7 @@ function Article(title, content, footnote) {
     ].join('');
     this.node.getElementsByClassName('title')[0].onclick = e => {
         e.preventDefault();
-        loadArticleContent(value.title);
+        loadArticleContent(title);
     }
 }
 
