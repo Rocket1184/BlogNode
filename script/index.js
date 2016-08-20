@@ -64,9 +64,7 @@ function loadArticleContent(articleTitle, fromState) {
                 `/archive/${articleTitle}`
             );
         }
-        document.getElementById('index-article-title').classList.remove('hidden');
-        document.getElementById('index-article-content').classList.remove('hidden');
-        document.getElementById('index-archive-header').classList.add('hidden');
+        document.getElementById('index-article-view').classList.remove('hidden');
         document.getElementById('index-article-list').classList.add('hidden');
 
         document.getElementById('index-article-title').innerText = articleTitle;
@@ -142,9 +140,7 @@ function loadMusicRecord() {
 }
 
 function showIndex() {
-    document.getElementById('index-article-title').classList.add('hidden');
-    document.getElementById('index-article-content').classList.add('hidden');
-    document.getElementById('index-archive-header').classList.remove('hidden');
+    document.getElementById('index-article-view').classList.add('hidden');
     document.getElementById('index-article-list').classList.remove('hidden');
 }
 

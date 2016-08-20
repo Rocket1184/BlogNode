@@ -1,3 +1,149 @@
+* {
+    font-family: 'Noto Sans' ,'Noto Sans S Chinese', 'Microsoft YaHei UI', '微软雅黑';
+    font-size: 16px;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    list-style: none;
+}
+
+a,
+a:link,
+a:visited {
+    text-decoration: none;
+    transition: color 0.4s;
+}
+
+a:hover {
+    color: darkorange;
+}
+
 .hidden {
     display: none;
+}
+
+body {
+    background-color: #dddddd;
+}
+
+div.nav {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 3rem;
+    width: 100%;
+    background-color: #009688;
+    opacity: 0.8;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+ul.nav {
+    height: 100%;
+    width: 1000px;
+    margin: auto;
+}
+
+li.nav {
+    height: 100%;
+    display: inline-block;
+    line-height: 3rem;
+    transition: background-color 0.4s;
+}
+
+li.nav:hover {
+    background-color: rgba(255, 255, 255, 0.2)
+}
+
+li.nav > a {
+    color: white;
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+}
+
+div.main {
+    position: relative;
+    width: 1000px;
+    margin: 4rem auto;
+}
+
+div.body {
+    width: 800px;
+}
+
+li.stack, 
+div#index-article-view{
+    background-color: white;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+    width: calc(100% - 2rem);
+    margin: 0  0 1.5rem 0;
+    padding: 0.6rem 1rem;
+    box-sizing: border-box;
+}
+
+li.stack > a.title {
+    font-size: 1.5rem;
+    color: #009688;
+}
+
+li.stack > a.title:hover {
+    color: darkorange;
+}
+
+li.stack > pre.content {
+    font-size: 1rem;
+    font-family: 'Monaco';
+}
+
+li.stack > pre.content::after {
+    content: "...";
+}
+
+li.stack > span.footnote {
+    font-size: 0.8rem;
+    color: gray;
+}
+
+
+
+div.side {
+    width: 200px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+div.music-record {
+    background-color: white;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+}
+
+div.music-record > h3 {
+    background-color: #2CA499;
+    color: white;
+    padding: 0.3rem 0.6rem;
+    font-weight: 100;
+}
+
+ul#index-music-record > li {
+    color: gray;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 0.3rem;
+}
+
+ul#index-music-record > li:last-child {
+    border-bottom: none;
+}
+
+ul#index-music-record > li > a {
+    color: gray;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transition: color 0.4s;
+}
+
+ul#index-music-record > li > a:hover {
+    color: black;
 }

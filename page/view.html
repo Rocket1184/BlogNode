@@ -17,23 +17,24 @@
         </ul>
     </div>
 
-    <div class="body">
-        <div id="index-article-list" class="hidden">
-            <h3 id="index-archive-header" class="hidden">Blog Archive</h3>
-            <ul class="stack">
-            </ul>
+    <div class="main">
+        <div class="body">
+            <div id="index-article-list" class="hidden">
+                <ul class="stack">
+                </ul>
+            </div>
+
+            <div id="index-article-view">
+                <h3 id="index-article-title">${article.title}</h3>
+                <article id="index-article-content">${article.content}</article>
+            </div>
         </div>
 
-        <div class="index-article-view">
-            <h3 id="index-article-title">${article.title}</h3>
-            <blockquote id="index-article-content">${article.content}</blockquote>
-        </div>
-    </div>
-
-    <div class="side">
-        <div class="music-record">
-            <h3>Rcecntly Listened</h3>
-            <ul id="index-music-record"></ul>
+        <div class="side">
+            <div class="music-record">
+                <h3>Rcecntly Listened</h3>
+                <ul id="index-music-record"></ul>
+            </div>
         </div>
     </div>
 </body>
