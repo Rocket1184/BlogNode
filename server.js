@@ -104,8 +104,8 @@ var server = http.createServer((request, response) => {
                     // get archive by url, must render page on server
                     if (pathName.indexOf('/archive/') >= 0) {
                         var archiveRegex = /archive\/(.+)/;
-                        var titleRegex = /\$\{archive\.title\}/;
-                        var contentRegex = /\$\{archive\.content\}/;
+                        var titleRegex = /\$\{article\.title\}/;
+                        var contentRegex = /\$\{article\.content\}/;
                         var title = archiveRegex.exec(pathName)[1];
                         fs.readFile(path.join(root, pathName), (err, data) => {
                             var page = plainViewPage;

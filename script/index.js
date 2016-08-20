@@ -1,25 +1,27 @@
 'use strict';
 
+function Article(title, content, footnote) {
+    this.node = document.createElement('li');
+    this.node.classList.add('stack');
+    this.node.innerHTML = [
+        `<a href="/archive/${title}" class="title">${title}</a>`,
+        `<pre class="content">${content}</pre>`,
+        `<span class="footnote">${footnote}</span>`,
+    ].join('');
+    this.node.getElementsByClassName('title')[0].onclick = e => {
+        e.preventDefault();
+        loadArticleContent(value.title);
+    }
+}
+
 function loadArticleList() {
-    var ul = document.getElementById('index-article-list');
+    var ul = document.querySelector('#index-article-list').getElementsByTagName('ul')[0];
 
     function success(response) {
         var resData = JSON.parse(response);
         resData.forEach((value, index) => {
-            var li = document.createElement('li');
-            var a = document.createElement('a');
-            var p = document.createElement('p');
-            p.innerHTML = `Summary: ${value.summary}...&nbsp;<br>posted@${value.ctime}`;
-            // a.setAttribute('href', `javascript:loadArticleContent('${value.title}');`);
-            a.setAttribute('href', `/archive/${value.title}`);
-            a.onclick = e => {
-                e.preventDefault();
-                loadArticleContent(value.title);
-            }
-            a.innerText = value.title;
-            li.appendChild(a);
-            li.appendChild(p)
-            ul.appendChild(li);
+            var el = new Article(value.title, value.summary, value.ctime);
+            ul.appendChild(el.node);
         });
     }
 

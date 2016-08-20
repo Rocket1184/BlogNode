@@ -9,14 +9,40 @@
 </head>
 
 <body>
-    <h1><a id="view-gotoIndex" href="javascript:void(0);">Rocka's Node Blog</a></h1>
-    <hr>
-    <h3 id="index-article-title" class="hidden">Title should be shown here.</h3>
-    <blockquote id="index-article-content" class="hidden">Article should be shown here.</blockquote>
-    <h3 id="index-archive-header">Blog Archive</h3>
-    <ul id="index-article-list"></ul>
-    <h3>Rcecntly Listened</h3>
-    <ul id="index-music-record"></ul>
+    <div class="nav">
+        <ul class="nav">
+            <li class="nav">
+                <a id="view-gotoIndex" href="javascript:void(0);">Rocka's Node Blog</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="body">
+        <div id="index-article-list">
+            <h3 id="index-archive-header">Blog Archive</h3>
+            <ul class="stack">
+                <!-- Article element HTML template.
+                <li class="stack">
+                    <a href="" class="title"></a>
+                    <pre class="content"></pre>
+                    <span class="footnote"></span>
+                </li>
+                -->
+            </ul>
+        </div>
+
+        <div class="index-article-view">
+            <h3 id="index-article-title" class="hidden">${article.title}</h3>
+            <blockquote id="index-article-content" class="hidden">${article.contnet}</blockquote>
+        </div>
+    </div>
+
+    <div class="side">
+        <div class="music-record">
+            <h3>Rcecntly Listened</h3>
+            <ul id="index-music-record"></ul>
+        </div>
+    </div>
 </body>
 
 </html>
