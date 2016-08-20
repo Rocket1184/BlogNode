@@ -39,6 +39,14 @@ function SideListItem(content, href) {
     ].join('');
 }
 
+/**
+ * Hide article content and show article list.
+ */
+function showIndex() {
+    document.getElementById('index-article-view').classList.add('hidden');
+    document.getElementById('index-article-list').classList.remove('hidden');
+}
+
 function loadArticleList() {
     var ul = document.querySelector('#index-article-list').getElementsByTagName('ul')[0];
 
@@ -52,7 +60,7 @@ function loadArticleList() {
 
     function fail(code) {
         var newLine = document.createElement('li');
-        newLine.innerText = `List Load Faild: Please Refresh Page And Try Again.`;
+        newLine.innerText = `List Load Faild :-(`;
         ul.appendChild(newLine);
     }
 
@@ -77,7 +85,6 @@ function loadArticleList() {
 }
 
 function loadArticleContent(articleTitle, fromState) {
-
     function success(response) {
         if (!fromState) {
             history.pushState({
@@ -132,13 +139,8 @@ function loadMusicRecord() {
         });
     }
 
-    function showError(message) {
-        ul.innerText = message;
-    }
-
     function fail(code) {
-        ul.innerText = 'Music Record Load Faild: Please Refresh Page And Try Again.';
-        ul.innerText += `Error Code: ${code}`;
+        ul.innerText = 'Music Record Load Faild :-(';
     }
 
     var request = new XMLHttpRequest();
@@ -146,11 +148,7 @@ function loadMusicRecord() {
     request.onreadystatechange = () => {
         if (request.readyState === 4) {
             if (request.status === 200) {
-                try {
-                    var rawList = JSON.parse(request.response);
-                } catch (e) {
-                    return showError(e.message);
-                }
+                var rawList = JSON.parse(request.response);
                 return success(rawList);
             } else {
                 return fail(request.status);
@@ -162,16 +160,13 @@ function loadMusicRecord() {
     request.send();
 }
 
-function showIndex() {
-    document.getElementById('index-article-view').classList.add('hidden');
-    document.getElementById('index-article-list').classList.remove('hidden');
-}
 
 window.onload = () => {
     console.log('Welcome to Rocka\'s Node Blog! ');
     loadArticleList();
     loadMusicRecord();
-    document.getElementById('view-gotoIndex').onclick = () => {
+    document.getElementById('view-gotoIndex').onclick = e => {
+        e.preventDefault();
         history.pushState({ originTitle: '', type: 'index', originPathName: window.location.pathname }, '', '/');
         showIndex();
     }

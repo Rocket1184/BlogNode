@@ -91,31 +91,31 @@ div.body {
     margin-right: 30px;
 }
 
-li.stack, 
+#index-article-list li.stack, 
 div#index-article-view{
     width: 850px;
     margin: 0  0 1.5rem 0;
 }
 
-li.stack > a.title {
+.stack > .title {
     font-size: 1.5rem;
     color: #009688;
 }
 
-li.stack > a.title:hover {
+.stack > a.title:hover {
     color: darkorange;
 }
 
-li.stack > pre.content {
+.stack > .content {
     font-size: 1rem;
     font-family: 'Monaco';
 }
 
-li.stack > pre.content::after {
+.stack > .content::after {
     content: "...";
 }
 
-li.stack > span.footnote {
+.stack > .footnote {
     font-size: 0.8rem;
     color: gray;
 }
@@ -133,6 +133,7 @@ div.sidebox {
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
     border-radius: 2px;
     overflow: hidden;
+    margin-bottom: 1.5rem;
 }
 
 div.sidebox .header {
@@ -142,7 +143,7 @@ div.sidebox .header {
     font-weight: 500;
 }
 
-ul#index-music-record > li {
+div.sidebox ul > li {
     color: gray;
     overflow: hidden;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -150,22 +151,18 @@ ul#index-music-record > li {
     transition: background-color 0.4s;
 }
 
-ul#index-music-record > li:hover {
+div.sidebox ul > li:hover {
     background-color: rgba(0, 0, 0, 0.1)
 }
 
-ul#index-music-record > li:last-child {
+div.sidebox ul > li:last-child {
     border-bottom: none;
 }
 
-ul#index-music-record > li > a {
+div.sidebox ul > li > a {
     font-weight: 300;
     color: #444444;
     white-space: nowrap;
     text-overflow: ellipsis;
     transition: color 0.4s;
-}
-
-ul#index-music-record > li > a:hover {
-    color: black;
 }
