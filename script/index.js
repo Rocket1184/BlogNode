@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * Create Index Article Element
+ * 
+ * @param {string} title
+ * @param {string} content
+ * @param {string} footnote
+ * 
+ * @returns {Object} Contains the Node. Use Object.node to get the node.
+ */
 function Article(title, content, footnote) {
     this.node = document.createElement('li');
     this.node.classList.add('stack');
@@ -12,6 +21,22 @@ function Article(title, content, footnote) {
         e.preventDefault();
         loadArticleContent(title);
     }
+}
+
+/**
+ * Create Sidebar List Line Element
+ * 
+ * @param {string} content
+ * @param {string} href
+ * 
+ * @returns {Obje} Contains the Node. Use Object.node to get the node.
+ */
+function SideListItem(content, href) {
+    this.node = document.createElement('li');
+    this.node.classList.add('side');
+    this.node.innerHTML = [
+        `<a href="${href}">${content}</a>`
+    ].join('');
 }
 
 function loadArticleList() {
@@ -99,13 +124,11 @@ function loadMusicRecord() {
     function success(rawList) {
         rawList.forEach((value, index) => {
             if (index > 9) return;
-            var li = document.createElement('li');
-            var a = document.createElement('a');
-            a.innerText = `${value.name} - ${value.artistName}`;
-            a.setAttribute('href', `http://music.163.com/#/song?id=${value.id}`);
-            a.setAttribute('target', '_blank');
-            li.appendChild(a);
-            ul.appendChild(li);
+            var el = new SideListItem(
+                `${value.name} - ${value.artistName}`,
+                `http://music.163.com/#/song?id=${value.id}`
+            );
+            ul.appendChild(el.node);
         });
     }
 

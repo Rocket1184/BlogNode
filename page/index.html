@@ -20,7 +20,7 @@
     <div class="main">
         <div class="body">
             <div id="index-article-list">
-                <ul class="stack">
+                <ul>
                     <!-- Article element HTML template.
                     <li class="stack">
                         <a href="" class="title"></a>
@@ -31,15 +31,15 @@
                 </ul>
             </div>
 
-            <div id="index-article-view" class="hidden">
+            <div id="index-article-view" class="stack hidden">
                 <h3 id="index-article-title">${article.title}</h3>
                 <article id="index-article-content">${article.content}</article>
             </div>
         </div>
 
         <div class="side">
-            <div class="music-record">
-                <h3>Rcecntly Listened</h3>
+            <div class="sidebox" id="music-record">
+                <h3 class="header">Rcecntly Listened</h3>
                 <ul id="index-music-record"></ul>
             </div>
         </div>

@@ -20,19 +20,19 @@
     <div class="main">
         <div class="body">
             <div id="index-article-list" class="hidden">
-                <ul class="stack">
+                <ul>
                 </ul>
             </div>
 
-            <div id="index-article-view">
+            <div id="index-article-view" class="stack">
                 <h3 id="index-article-title">${article.title}</h3>
                 <article id="index-article-content">${article.content}</article>
             </div>
         </div>
 
         <div class="side">
-            <div class="music-record">
-                <h3>Rcecntly Listened</h3>
+            <div class="sidebox" id="music-record">
+                <h3 class="header">Rcecntly Listened</h3>
                 <ul id="index-music-record"></ul>
             </div>
         </div>

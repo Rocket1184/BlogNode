@@ -1,3 +1,5 @@
+/*   global adjustment   */
+
 * {
     font-family: 'Noto Sans' ,'Noto Sans S Chinese', 'Microsoft YaHei UI', '微软雅黑';
     font-size: 16px;
@@ -18,9 +20,22 @@ a:hover {
     color: darkorange;
 }
 
+
+/*  public styles  */
+
 .hidden {
     display: none;
 }
+
+.stack {
+    background-color: white;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+    padding: 0.6rem 1rem;
+    box-sizing: border-box;
+    border-radius: 2px;
+}
+
+/*  specific elements  */
 
 body {
     background-color: #dddddd;
@@ -40,7 +55,7 @@ div.nav {
 
 ul.nav {
     height: 100%;
-    width: 1000px;
+    width: 1140px;
     margin: auto;
 }
 
@@ -60,26 +75,26 @@ li.nav > a {
     display: inline-block;
     height: 100%;
     width: 100%;
+    padding: 0 1em;
 }
 
 div.main {
     position: relative;
-    width: 1000px;
+    width: 1140px;
     margin: 4rem auto;
+    font-size: 0;
 }
 
 div.body {
-    width: 800px;
+    width: 850px;
+    display: inline-block;
+    margin-right: 30px;
 }
 
 li.stack, 
 div#index-article-view{
-    background-color: white;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
-    width: calc(100% - 2rem);
+    width: 850px;
     margin: 0  0 1.5rem 0;
-    padding: 0.6rem 1rem;
-    box-sizing: border-box;
 }
 
 li.stack > a.title {
@@ -105,32 +120,38 @@ li.stack > span.footnote {
     color: gray;
 }
 
-
-
 div.side {
-    width: 200px;
-    position: absolute;
+    width: 260px;
+    display: inline-block;
     right: 0;
     top: 0;
+    vertical-align: top;
 }
 
-div.music-record {
+div.sidebox {
     background-color: white;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+    border-radius: 2px;
+    overflow: hidden;
 }
 
-div.music-record > h3 {
+div.sidebox .header {
     background-color: #2CA499;
     color: white;
-    padding: 0.3rem 0.6rem;
-    font-weight: 100;
+    padding: 0.3rem 1.2rem;
+    font-weight: 500;
 }
 
 ul#index-music-record > li {
     color: gray;
     overflow: hidden;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    padding: 0.3rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.3rem 1rem;
+    transition: background-color 0.4s;
+}
+
+ul#index-music-record > li:hover {
+    background-color: rgba(0, 0, 0, 0.1)
 }
 
 ul#index-music-record > li:last-child {
@@ -138,7 +159,8 @@ ul#index-music-record > li:last-child {
 }
 
 ul#index-music-record > li > a {
-    color: gray;
+    font-weight: 300;
+    color: #444444;
     white-space: nowrap;
     text-overflow: ellipsis;
     transition: color 0.4s;
