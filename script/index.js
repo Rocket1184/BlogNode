@@ -28,14 +28,15 @@ function Article(title, content, footnote) {
  * 
  * @param {string} content
  * @param {string} href
+ * @param {string} target
  * 
  * @returns {Obje} Contains the Node. Use Object.node to get the node.
  */
-function SideListItem(content, href) {
+function SideListItem(content, href, target) {
     this.node = document.createElement('li');
     this.node.classList.add('side');
     this.node.innerHTML = [
-        `<a href="${href}">${content}</a>`
+        `<a href="${href}" target="${target}">${content}</a>`
     ].join('');
 }
 
@@ -133,7 +134,8 @@ function loadMusicRecord() {
             if (index > 9) return;
             var el = new SideListItem(
                 `${value.name} - ${value.artistName}`,
-                `http://music.163.com/#/song?id=${value.id}`
+                `http://music.163.com/#/song?id=${value.id}`,
+                `_blank`
             );
             ul.appendChild(el.node);
         });
