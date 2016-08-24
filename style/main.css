@@ -144,7 +144,7 @@ div.sidebox .header {
 }
 
 div.sidebox ul > li {
-    color: gray;
+    color: #444444;
     overflow: hidden;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding: 0.3rem 1rem;
@@ -164,5 +164,6 @@ div.sidebox ul > li > a {
     color: #444444;
     white-space: nowrap;
     text-overflow: ellipsis;
-    transition: color 0.4s;
+    display: inherit;
+    overflow: hidden;
 }

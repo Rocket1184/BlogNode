@@ -1,13 +1,11 @@
 'use strict';
 
 /**
- * Create Index Article Element
+ * Create Index Article Element. Use Object.node to get the node.
  * 
  * @param {string} title
  * @param {string} content
  * @param {string} footnote
- * 
- * @returns {Object} Contains the Node. Use Object.node to get the node.
  */
 function Article(title, content, footnote) {
     this.node = document.createElement('li');
@@ -24,13 +22,11 @@ function Article(title, content, footnote) {
 }
 
 /**
- * Create Sidebar List Line Element
+ * Create Sidebar List Line Element. Use Object.node to get the node.
  * 
  * @param {string} content
  * @param {string} href
  * @param {string} target
- * 
- * @returns {Obje} Contains the Node. Use Object.node to get the node.
  */
 function SideListItem(content, href, target) {
     this.node = document.createElement('li');
@@ -137,6 +133,7 @@ function loadMusicRecord() {
                 `http://music.163.com/#/song?id=${value.id}`,
                 `_blank`
             );
+            el.node.setAttribute('title', el.node.innerText);
             ul.appendChild(el.node);
         });
     }
@@ -161,7 +158,6 @@ function loadMusicRecord() {
     request.open('GET', `/api/music-record`);
     request.send();
 }
-
 
 window.onload = () => {
     console.log('Welcome to Rocka\'s Node Blog! ');
