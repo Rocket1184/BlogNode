@@ -6,23 +6,31 @@ const url = require('url');
 const fs = require('fs');
 
 const NeteaseApi = require('./NeteaseApiAndroid');
+const ContentType = require('./HtmlContentType');
 
-var root = path.resolve('.');
-var archiveJSON = new Array();
-var plainViewPage;
+const root = path.resolve('.');
+
+var regexs = {
+    nodeVersion: /\$\{process\.versions\.node\}/,
+    archivePath: /archive\/(.+)/,
+    arcitleTitle: /\$\{article\.title\}/,
+    articleContent: /\$\{article\.content\}/,
+    extName: /\w+\.(\w+)$/
+}
 
 fs.readFile(path.join(root, '/page/404.html'), (err, data) => {
-    var versionRegex = /\$\{process\.versions\.node\}/;
-    var nodeVersion = process.versions.node;
-    var current404 = data.toString().replace(versionRegex, nodeVersion);
+    var ver = process.version;
+    var current404 = data.toString().replace(regexs.nodeVersion, ver);
     var page404 = fs.createWriteStream(path.join(root, '/page/current404.html'));
     page404.end(current404, 'utf8');
 });
 
+var plainViewPage;
 fs.readFile(path.join(root, '/page/view.html'), (err, data) => {
     plainViewPage = data.toString();
 });
 
+var archiveJSON = new Array();
 function updateArchiveList() {
     console.log(`[Node Server] Initializing Archive List...`);
     archiveJSON = new Array();
@@ -42,23 +50,9 @@ function updateArchiveList() {
         });
     });
 }
-
-function sendMusicRecord(fileName, response) {
-    fs.readFile(fileName, (err, data) => {
-        if (err) {
-            response.writeHead(400, { 'Content-Type': 'application/json' });
-            response.end(err.message);
-        } else {
-            response.writeHead(200, { 'Content-Type': 'application/json' });
-            response.end(data);
-        }
-    });
-}
-
-console.log(`[Node Server] Initializing Netease Music Record...`);
-NeteaseApi.init(76980626, 4 * 3600 * 1000);
-
 updateArchiveList();
+
+NeteaseApi.init(76980626, 4 * 3600 * 1000);
 
 var server = http.createServer((request, response) => {
     console.log(`[Node Server] ${request.method}: ${request.url}`);
@@ -78,9 +72,7 @@ var server = http.createServer((request, response) => {
                     break;
                 case '/api/music-record':
                     response.writeHead(200, { 'Content-Type': 'application/json' });
-                    NeteaseApi.get((data) => {
-                        response.end(data);
-                    })
+                    NeteaseApi.get(data => response.end(data));
                     break;
                 default:
                     break;
@@ -103,47 +95,19 @@ var server = http.createServer((request, response) => {
                 if (!err && stats.isFile()) {
                     // get archive by url, must render page on server
                     if (pathName.indexOf('/archive/') >= 0) {
-                        var archiveRegex = /archive\/(.+)/;
-                        var titleRegex = /\$\{article\.title\}/;
-                        var contentRegex = /\$\{article\.content\}/;
-                        var title = archiveRegex.exec(pathName)[1];
+                        let title = regexs.archivePath.exec(pathName)[1];
                         fs.readFile(path.join(root, pathName), (err, data) => {
-                            var page = plainViewPage;
-                            var page = page.replace(titleRegex, title);
-                            var page = page.replace(contentRegex, data.toString());
+                            let page = plainViewPage;
+                            page = page.replace(regexs.arcitleTitle, title);
+                            page = page.replace(regexs.articleContent, data.toString());
                             response.end(page);
                         });
                     } else {
-                        var extRegex = /\w+\.(\w+)$/;
-                        var extName;
+                        let extName;
                         try {
-                            extName = extRegex.exec(pathName)[1];
+                            extName = regexs.extName.exec(pathName)[1];
                         } catch (e) { }
-                        var contentType;
-                        switch (extName) {
-                            case 'css':
-                                contentType = 'text/css';
-                                break;
-                            case 'js':
-                                contentType = 'application/x-javascript';
-                                break;
-                            case 'json':
-                                contentType = 'application/json';
-                                break;
-                            case 'jpg':
-                                contentType = 'image/jpeg';
-                                break;
-                            case 'html':
-                                contentType = 'text/html';
-                                break;
-                            case 'png':
-                                contentType = 'image/png';
-                                break;
-                            default:
-                                contentType = 'text/plain';
-                                break;
-                        }
-                        response.writeHead(200, { 'content-Type': contentType });
+                        response.writeHead(200, { 'content-Type': ContentType.get(extName) });
                         fs.createReadStream(filePath).pipe(response);
                     }
                     // cannot find file, but received index request
@@ -156,7 +120,6 @@ var server = http.createServer((request, response) => {
                     fs.createReadStream('./page/current404.html').pipe(response);
                 }
             });
-
         }
     }
 });
@@ -165,7 +128,7 @@ var server = http.createServer((request, response) => {
 // so you can't set the port to a fixed number.
 // Heroku adds the port to the env,
 // so you can pull it from there.
-var serverPort = process.env.PORT || 5000;
+var serverPort = process.env.PORT || 80;
 
 server.listen(serverPort);
 

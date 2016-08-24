@@ -26,6 +26,7 @@ var options = {
 };
 
 function init(id, eTime) {
+    console.log('[Netease API] Initializing...');
     userId = id;
     expireTime = eTime;
     outputFileName = `netease_music_record_${id}.json`;
