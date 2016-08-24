@@ -40,11 +40,7 @@ function updateArchiveList() {
             fs.stat(path.join(pathName, value), (err, stat) => {
                 fs.readFile(path.join(pathName, value), (err, data) => {
                     archiveJSON.push({ title: value, ctime: stat.ctime, summary: data.toString().substr(0, 10) });
-                    archiveJSON.sort((a, b) => {
-                        if (a.ctime < b.ctime) return 1;
-                        if (a.citme == b.ctime) return 0;
-                        return -1;
-                    });
+                    archiveJSON.sort((a, b) => (a.ctime < b.ctime) ? 1 : -1);
                 });
             });
         });
@@ -96,7 +92,7 @@ var server = http.createServer((request, response) => {
                     // get archive by url, must render page on server
                     if (pathName.indexOf('/archive/') >= 0) {
                         let title = regexs.archivePath.exec(pathName)[1];
-                        fs.readFile(path.join(root, pathName), (err, data) => {
+                        fs.readFile(filePath, (err, data) => {
                             let page = plainViewPage;
                             page = page.replace(regexs.arcitleTitle, title);
                             page = page.replace(regexs.articleContent, data.toString());
