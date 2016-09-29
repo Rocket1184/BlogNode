@@ -5,8 +5,9 @@ const path = require('path');
 const url = require('url');
 const fs = require('fs');
 
-const NeteaseApi = require('./NeteaseApiAndroid');
-const ContentType = require('./HtmlContentType');
+const NeteaseApi = require('./lib/NeteaseApiAndroid');
+const ContentType = require('./lib/HtmlContentType');
+const ArchiveReader = require('./lib/ArchiveReader');
 
 const root = path.resolve('.');
 
@@ -18,6 +19,7 @@ var regexs = {
     extName: /\w+\.(\w+)$/
 }
 
+/**init Current Version 404 page. */
 fs.readFile(path.join(root, '/page/404.html'), (err, data) => {
     var ver = process.version;
     var current404 = data.toString().replace(regexs.nodeVersion, ver);
@@ -25,30 +27,14 @@ fs.readFile(path.join(root, '/page/404.html'), (err, data) => {
     page404.end(current404, 'utf8');
 });
 
+/**init archive view page template */
 var plainViewPage;
 fs.readFile(path.join(root, '/page/view.html'), (err, data) => {
     plainViewPage = data.toString();
 });
 
-var archiveJSON = new Array();
-function updateArchiveList() {
-    console.log(`[Node Server] Initializing Archive List...`);
-    archiveJSON = new Array();
-    var pathName = path.join(root, '/archive');
-    fs.readdir(pathName, (err, files) => {
-        files.forEach((value, index) => {
-            fs.stat(path.join(pathName, value), (err, stat) => {
-                fs.readFile(path.join(pathName, value), (err, data) => {
-                    archiveJSON.push({ title: value, ctime: stat.ctime, summary: data.toString().substr(0, 10) });
-                    archiveJSON.sort((a, b) => (a.ctime < b.ctime) ? 1 : -1);
-                });
-            });
-        });
-    });
-}
-updateArchiveList();
-
 NeteaseApi.init(76980626, 4 * 3600 * 1000);
+ArchiveReader.init(path.resolve(root, 'archive'));
 
 var server = http.createServer((request, response) => {
     console.log(`[Node Server] ${request.method}: ${request.url}`);
@@ -57,14 +43,14 @@ var server = http.createServer((request, response) => {
     // file path based on operation system
     var filePath = path.join(root, pathName);
     console.log(`[Node Server] pathName: ${pathName}, filePath: ${filePath}`);
-    console.log(`[Node Server] Request Header: ${JSON.stringify(request.headers)}`);
+    // console.log(`[Node Server] Request Header: ${JSON.stringify(request.headers)}`);
     if (request.method === 'GET') {
         // this is a api request
         if (pathName.indexOf('/api/') >= 0) {
             switch (pathName) {
-                case '/api/index-article-list':
+                case '/api/archive-list':
                     response.writeHead(200, { 'Content-Type': 'application/json' });
-                    response.end(JSON.stringify(archiveJSON));
+                    ArchiveReader.get(e => response.end(JSON.stringify(e)));
                     break;
                 case '/api/music-record':
                     response.writeHead(200, { 'Content-Type': 'application/json' });
@@ -102,7 +88,7 @@ var server = http.createServer((request, response) => {
                         let extName;
                         try {
                             extName = regexs.extName.exec(pathName)[1];
-                        } catch (e) { }
+                        } catch (e) {}
                         response.writeHead(200, { 'content-Type': ContentType.get(extName) });
                         fs.createReadStream(filePath).pipe(response);
                     }
@@ -124,7 +110,7 @@ var server = http.createServer((request, response) => {
 // so you can't set the port to a fixed number.
 // Heroku adds the port to the env,
 // so you can pull it from there.
-var serverPort = process.env.PORT || 80;
+var serverPort = process.env.PORT || 8080;
 
 server.listen(serverPort);
 

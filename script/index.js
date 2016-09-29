@@ -3,21 +3,22 @@
 /**
  * Create Index Article Element. Use Object.node to get the node.
  * 
+ * @param {string} fileName
  * @param {string} title
  * @param {string} content
  * @param {string} footnote
  */
-function Article(title, content, footnote) {
+function Article(fileName, title, content, footnote) {
     this.node = document.createElement('li');
     this.node.classList.add('stack');
     this.node.innerHTML = [
-        `<a href="/archive/${title}" class="title">${title}</a>`,
+        `<a href="/archive/${fileName}" class="title">${title}</a>`,
         `<pre class="content">${content}</pre>`,
         `<span class="footnote">${footnote}</span>`,
     ].join('');
     this.node.getElementsByClassName('title')[0].onclick = e => {
         e.preventDefault();
-        loadArticleContent(title);
+        loadArticleContent(fileName);
     }
 }
 
@@ -49,13 +50,13 @@ function loadArticleList() {
 
     function success(response) {
         var resData = JSON.parse(response);
-        resData.forEach((value, index) => {
-            var el = new Article(value.title, value.summary, value.ctime);
+        resData.forEach(value => {
+            var el = new Article(value.fileName, value.title, value.content, (new Date(value.date)).toLocaleString());
             ul.appendChild(el.node);
         });
     }
 
-    function fail(code) {
+    function fail() {
         var newLine = document.createElement('li');
         newLine.innerText = `List Load Faild :-(`;
         ul.appendChild(newLine);
@@ -71,38 +72,38 @@ function loadArticleList() {
                 return success(request.response);
             } else {
                 // failed: show error code
-                return fail(request.status);
+                return fail();
             }
         }
     }
 
     // send request
-    request.open('GET', '/api/index-article-list');
+    request.open('GET', '/api/archive-list');
     request.send();
 }
 
-function loadArticleContent(articleTitle, fromState) {
+function loadArticleContent(fileName, fromState) {
     function success(response) {
         if (!fromState) {
             history.pushState({
-                originTitle: articleTitle,
+                originTitle: fileName,
                 type: 'archive',
                 originPathName: window.location.pathname
             },
-                articleTitle,
-                `/archive/${articleTitle}`
+                fileName,
+                `/archive/${fileName}`
             );
         }
         document.getElementById('index-article-view').classList.remove('hidden');
         document.getElementById('index-article-list').classList.add('hidden');
 
-        document.getElementById('index-article-title').innerText = articleTitle;
+        document.getElementById('index-article-title').innerText = fileName;
         document.getElementById('index-article-content').innerText = response;
     }
 
     function fail(code) {
-        bq.innerText = 'Article Load Faild: Please Refresh Page And Try Again.';
-        bq.innerText += `Error Code: ${code}`;
+        document.getElementById('index-article-title').innerText = 'Article Load Faild: Please Refresh Page And Try Again.';
+        document.getElementById('index-article-content').innerText += `Error Code: ${code}`;
     }
 
     var request = new XMLHttpRequest();
@@ -117,7 +118,7 @@ function loadArticleContent(articleTitle, fromState) {
         }
     }
 
-    request.open('GET', `/archive/${articleTitle}`);
+    request.open('GET', `/archive/${fileName}`);
     request.setRequestHeader('pushState-Ajax', true);
     request.send();
 }
@@ -138,7 +139,7 @@ function loadMusicRecord() {
         });
     }
 
-    function fail(code) {
+    function fail() {
         ul.innerText = 'Music Record Load Faild :-(';
     }
 
@@ -150,7 +151,7 @@ function loadMusicRecord() {
                 var rawList = JSON.parse(request.response);
                 return success(rawList);
             } else {
-                return fail(request.status);
+                return fail();
             }
         }
     }
