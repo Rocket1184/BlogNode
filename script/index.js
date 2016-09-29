@@ -97,7 +97,7 @@ function loadArticleContent(fileName, fromState) {
         document.getElementById('index-article-view').classList.remove('hidden');
         document.getElementById('index-article-list').classList.add('hidden');
 
-        document.getElementById('index-article-title').innerText = fileName;
+        document.getElementById('index-article-title').innerText = /Title:(.+)/.exec(response)[1].trim();
         document.getElementById('index-article-content').innerText = response;
     }
 

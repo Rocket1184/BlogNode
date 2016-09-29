@@ -77,12 +77,18 @@ var server = http.createServer((request, response) => {
                 if (!err && stats.isFile()) {
                     // get archive by url, must render page on server
                     if (pathName.indexOf('/archive/') >= 0) {
-                        let title = regexs.archivePath.exec(pathName)[1];
-                        fs.readFile(filePath, (err, data) => {
-                            let page = plainViewPage;
-                            page = page.replace(regexs.arcitleTitle, title);
-                            page = page.replace(regexs.articleContent, data.toString());
-                            response.end(page);
+                        let fileName = regexs.archivePath.exec(pathName)[1];
+                        ArchiveReader.get(archives => {
+                            archives.forEach(archive => {
+                                if (archive.fileName === fileName) {
+                                    fs.readFile(filePath, (err, data) => {
+                                        let page = plainViewPage;
+                                        page = page.replace(regexs.arcitleTitle, archive.title);
+                                        page = page.replace(regexs.articleContent, data.toString().replace(/\n/g, '<br>'));
+                                        response.end(page);
+                                    });
+                                }
+                            });
                         });
                     } else {
                         let extName;
