@@ -1,18 +1,20 @@
 'use strict';
 
-const typeMap = new Map();
+const tMap = new Map();
 
-typeMap.set('html','text/html');
-typeMap.set('css','text/css');
-typeMap.set('js','application/x-javascript');
-typeMap.set('json','application/json');
-typeMap.set('jpg','image/jpeg');
-typeMap.set('png','image/png');
-typeMap.set('txt','text/plain');
+tMap.set('html', 'text/html')
+    .set('css', 'text/css')
+    .set('js', 'application/x-javascript')
+    .set('json', 'application/json')
+    .set('jpg', 'image/jpeg')
+    .set('png', 'image/png')
+    .set('gif', 'image/gif')
+    .set('ico', 'image/x-icon')
+    .set('txt', 'text/plain');
 
 function get(extName) {
-    if (typeMap.has(extName)) {
-        return typeMap.get(extName);
+    if (tMap.has(extName)) {
+        return tMap.get(extName);
     } else {
         return 'text/plain';
     }
