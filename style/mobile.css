@@ -1,0 +1,47 @@
+@media screen and (max-width: 1140px) {
+    .main {
+        width: 900px;
+    }
+    .body,
+    .stack {
+        width: 610px;
+    }
+}
+
+@media screen and (max-width: 940px) {
+    .main,
+    .side {
+        width: 100%;
+        max-width: 610px;
+    }
+
+    .side {
+        width: 610px;
+        text-align-last: justify;
+    }
+
+    .sidebox {
+        width: 290px;
+        display: inline-block;
+        text-align-last: initial;
+    }
+}
+
+@media screen and (max-width: 630px) {
+    .body,
+    .side {
+        width: 100%;
+    }
+    .body {
+        margin: 0;
+    }
+    .stack,
+    .sidebox{
+        margin-left: 1rem;
+        margin-right: 1rem;
+        width: calc(100% - 2rem);
+    }
+    #index-article-list {
+        width: 100%;
+    }
+}

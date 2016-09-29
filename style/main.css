@@ -78,21 +78,20 @@ li.nav > a {
     padding: 0 1em;
 }
 
-div.main {
+.main {
     position: relative;
     width: 1140px;
     margin: 4rem auto;
     font-size: 0;
 }
 
-div.body {
+.body {
     width: 850px;
     display: inline-block;
     margin-right: 30px;
 }
 
-#index-article-list li.stack, 
-div#index-article-view{
+.stack{
     width: 850px;
     margin: 0  0 1.5rem 0;
 }
@@ -120,7 +119,7 @@ div#index-article-view{
     color: gray;
 }
 
-div.side {
+.side {
     width: 260px;
     display: inline-block;
     right: 0;
@@ -128,7 +127,7 @@ div.side {
     vertical-align: top;
 }
 
-div.sidebox {
+.sidebox {
     background-color: white;
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
     border-radius: 2px;
@@ -136,30 +135,30 @@ div.sidebox {
     margin-bottom: 1.5rem;
 }
 
-div.sidebox .header {
+.sidebox .header {
     background-color: #2CA499;
     color: white;
-    padding: 0.3rem 1.2rem;
+    padding: 0.6rem 1rem;
     font-weight: 500;
 }
 
-div.sidebox ul > li {
+.side-li {
     color: #444444;
     overflow: hidden;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 0.3rem 1rem;
+    padding: 0.5rem 1rem;
     transition: background-color 0.4s;
 }
 
-div.sidebox ul > li:hover {
+.side-li:hover {
     background-color: rgba(0, 0, 0, 0.1)
 }
 
-div.sidebox ul > li:last-child {
+.side-li:last-child {
     border-bottom: none;
 }
 
-div.sidebox ul > li > a {
+.side-li > a {
     font-weight: 300;
     color: #444444;
     white-space: nowrap;

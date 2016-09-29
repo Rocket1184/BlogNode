@@ -31,7 +31,7 @@ function Article(fileName, title, content, footnote) {
  */
 function SideListItem(content, href, target) {
     this.node = document.createElement('li');
-    this.node.classList.add('side');
+    this.node.classList.add('side-li');
     this.node.innerHTML = [
         `<a href="${href}" target="${target}">${content}</a>`
     ].join('');
