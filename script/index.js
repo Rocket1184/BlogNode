@@ -99,7 +99,7 @@ function loadArticleContent(fileName, fromState) {
         document.getElementById('index-article-list').classList.add('hidden');
 
         document.getElementById('index-article-title').innerText = data.title;
-        document.getElementById('index-article-content').innerText = data.content;
+        document.getElementById('index-article-content').innerHTML = data.content;
     }
 
     function fail(code) {
