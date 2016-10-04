@@ -1,5 +1,6 @@
 'use strict';
 
+const https = require('https');
 const http = require('http');
 const path = require('path');
 const url = require('url');
@@ -33,7 +34,7 @@ fs.readFile(path.join(root, '/page/view.html'), (err, data) => {
 NeteaseApi.init(76980626, 4 * 3600 * 1000);
 ArchiveReader.init(path.resolve(root, 'archive'));
 
-let server = http.createServer((request, response) => {
+let ServerHandler = (request, response) => {
     console.log(`[Node Server] ${request.method}: ${request.url}`);
     /**path name in url */
     let pathName = url.parse(request.url).pathname;
@@ -100,7 +101,15 @@ let server = http.createServer((request, response) => {
             });
         }
     }
-});
+}
+
+let HttpsOptions = {
+    key: fs.readFileSync('/etc/letsencrypt/live/rocka.me/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/rocka.me/cert.pem')
+}
+
+let server = http.createServer(ServerHandler);
+let httpss = https.createServer(HttpsOptions, ServerHandler);
 
 // Heroku dynamically assigns your app a port,
 // so you can't set the port to a fixed number.
@@ -109,5 +118,6 @@ let server = http.createServer((request, response) => {
 let serverPort = process.env.PORT || 8080;
 
 server.listen(serverPort);
+httpss.listen(443);
 
 console.log(`[Node Server] Running at http://127.0.0.1:${serverPort}/`);
