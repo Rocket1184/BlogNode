@@ -4,7 +4,8 @@
   "description": "A simple blog server build with NodeJS",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "nohup": "nohup node server.js"
   },
   "repository": {
     "type": "git",
