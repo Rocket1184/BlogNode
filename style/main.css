@@ -201,7 +201,7 @@ h6 {
 
 h1::after,
 h2::after {
-    font-size: 1px;
+    font-size: 0px;
     color: lightgrey;
     content: "-";
     display: block;
