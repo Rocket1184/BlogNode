@@ -104,6 +104,7 @@ let ServerHandler = (request, response) => {
 }
 
 let HttpsOptions = {
+    ca: fs.readFileSync('/etc/letsencrypt/live/rocka.me/chain.pem'),
     key: fs.readFileSync('/etc/letsencrypt/live/rocka.me/privkey.pem'),
     cert: fs.readFileSync('/etc/letsencrypt/live/rocka.me/cert.pem')
 }
