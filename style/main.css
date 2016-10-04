@@ -175,32 +175,32 @@ article>* {
     margin-bottom: 16px;
 }
 
-h1 {
+article h1 {
     font-size: 2rem;
 }
 
-h2 {
+article h2 {
     font-size: 1.8rem;
 }
 
-h3 {
+article h3 {
     font-size: 1.6rem;
 }
 
-h4 {
+article h4 {
     font-size: 1.4rem;
 }
 
-h5 {
+article h5 {
     font-size: 1.2rem;
 }
 
-h6 {
+article h6 {
     font-size: 1.1rem;
 }
 
-h1::after,
-h2::after {
+article h1::after,
+article h2::after {
     font-size: 0px;
     color: lightgrey;
     content: "-";
