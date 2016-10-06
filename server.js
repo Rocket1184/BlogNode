@@ -103,22 +103,28 @@ let ServerHandler = (request, response) => {
     }
 }
 
-let HttpsOptions = {
-    ca: fs.readFileSync('/etc/letsencrypt/live/rocka.me/chain.pem'),
-    key: fs.readFileSync('/etc/letsencrypt/live/rocka.me/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/rocka.me/cert.pem')
+// try if support https
+try {
+    let HttpsOptions = {
+        ca: fs.readFileSync('/etc/letsencrypt/live/rocka.me/chain.pem'),
+        key: fs.readFileSync('/etc/letsencrypt/live/rocka.me/privkey.pem'),
+        cert: fs.readFileSync('/etc/letsencrypt/live/rocka.me/cert.pem')
+    }
+    let httpsPort = 443;
+    let httpss = https.createServer(HttpsOptions, ServerHandler);
+    httpss.listen(443);
+    console.log(`[Node Server] HTTPS Server running on https://127.0.0.1:${httpsPort}`);
+} catch (err) {
+    console.log(`[Node Server] HTTPS not supported.`);
 }
-
-let server = http.createServer(ServerHandler);
-let httpss = https.createServer(HttpsOptions, ServerHandler);
 
 // Heroku dynamically assigns your app a port,
 // so you can't set the port to a fixed number.
 // Heroku adds the port to the env,
 // so you can pull it from there.
-let serverPort = process.env.PORT || 8080;
+let httpPort = process.env.PORT || 8080;
+let server = http.createServer(ServerHandler);
 
-server.listen(serverPort);
-httpss.listen(443);
+server.listen(httpPort);
 
-console.log(`[Node Server] Running at http://127.0.0.1:${serverPort}/`);
+console.log(`[Node Server] HTTP Server running on http://127.0.0.1:${httpPort}`);
