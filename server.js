@@ -10,6 +10,7 @@ const NeteaseApi = require('./lib/NeteaseApiAndroid');
 const ContentType = require('./lib/HtmlContentType');
 const ArchiveReader = require('./lib/ArchiveReader');
 const ViewPageBuilder = require('./lib/ViewPageBuilder');
+const HttpsOption = require('./lib/HttpsOption');
 
 const root = path.resolve('.');
 
@@ -33,6 +34,7 @@ fs.readFile(path.join(root, '/page/view.html'), (err, data) => {
 
 NeteaseApi.init(76980626, 4 * 3600 * 1000);
 ArchiveReader.init(path.resolve(root, 'archive'));
+HttpsOption.init(path.resolve(root, 'config.json'));
 
 let ServerHandler = (request, response) => {
     console.log(`[Node Server] ${request.method}: ${request.url}`);
@@ -104,24 +106,16 @@ let ServerHandler = (request, response) => {
 }
 
 // try if support https
-try {
-    let HttpsOptions = {
-        ca: fs.readFileSync('/etc/letsencrypt/live/rocka.me/chain.pem'),
-        key: fs.readFileSync('/etc/letsencrypt/live/rocka.me/privkey.pem'),
-        cert: fs.readFileSync('/etc/letsencrypt/live/rocka.me/cert.pem')
+HttpsOption.get((err, opt) => {
+    if (!err) {
+        let httpsServer = https.createServer(opt, ServerHandler);
+        let httpsPort = process.env.HTTPS_PORT || 8443;
+        httpsServer.listen(httpsPort);
+        console.log(`[Node Server] HTTPS Server running on https://127.0.0.1:${httpsPort}`);
     }
-    let httpsPort = 443;
-    let httpss = https.createServer(HttpsOptions, ServerHandler);
-    httpss.listen(443);
-    console.log(`[Node Server] HTTPS Server running on https://127.0.0.1:${httpsPort}`);
-} catch (err) {
-    console.log(`[Node Server] HTTPS not supported.`);
-}
+});
 
-// Heroku dynamically assigns your app a port,
-// so you can't set the port to a fixed number.
-// Heroku adds the port to the env,
-// so you can pull it from there.
+// port number from env
 let httpPort = process.env.PORT || 8080;
 let server = http.createServer(ServerHandler);
 
