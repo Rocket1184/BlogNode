@@ -2,3 +2,5 @@
 /page/current404.html
 /*.json
 /typings
+nohup.out
+/static/*
