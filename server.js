@@ -17,7 +17,7 @@ const root = path.resolve('.');
 let regexs = {
     nodeVersion: /\$\{process\.versions\.node\}/,
     extName: /\w+\.(\w+)$/
-}
+};
 
 /**init Current Version 404 page. */
 fs.readFile(path.join(root, '/page/404.html'), (err, data) => {
@@ -29,14 +29,14 @@ fs.readFile(path.join(root, '/page/404.html'), (err, data) => {
 
 /**init archive view page template */
 fs.readFile(path.join(root, '/page/view.html'), (err, data) => {
-    ViewPageBuilder.init(data.toString())
+    ViewPageBuilder.init(data.toString());
 });
 
 NeteaseApi.init(76980626, 4 * 3600 * 1000);
 ArchiveReader.init(path.resolve(root, 'archive'));
 HttpsOption.init(path.resolve(root, 'config.json'));
 
-let ServerHandler = (request, response) => {
+function ServerHandler(request, response) {
     console.log(`[Node Server] ${request.method}: ${request.url}`);
     /**path name in url */
     let pathName = url.parse(request.url).pathname;
