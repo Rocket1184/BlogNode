@@ -1,7 +1,7 @@
 /*   global adjustment   */
 
 * {
-    font-family: 'Noto Sans', 'Noto Sans S Chinese', 'Microsoft YaHei UI', '微软雅黑';
+    font-family: 'Noto Sans CJK SC', '文泉驿微米黑', 'Microsoft YaHei UI', '微软雅黑', sans-serif;
     font-size: 16px;
     padding: 0;
     margin: 0;
@@ -108,7 +108,7 @@ li.nav>a {
 
 .stack>.content {
     font-size: 1rem;
-    font-family: 'Monaco';
+    font-family: 'Monaco', 'Ubuntu Mono', 'Consolas', monospace;
 }
 
 .stack>.content::after {
@@ -219,7 +219,7 @@ quote {
 
 .code-inline,
 .code-block {
-    font-family: Monaco, Consolas, monospaced;
+    font-family: 'Monaco', 'Ubuntu Mono', 'Consolas', monospace;
     background-color: #EEEEEE;
 }
 
