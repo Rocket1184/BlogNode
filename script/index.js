@@ -19,7 +19,7 @@ function Article(fileName, title, content, footnote) {
     this.node.getElementsByClassName('title')[0].onclick = e => {
         e.preventDefault();
         loadArticleContent(fileName);
-    }
+    };
 }
 
 /**
@@ -46,23 +46,23 @@ function showIndex() {
 }
 
 function loadArticleList() {
-    var ul = document.querySelector('#index-article-list').getElementsByTagName('ul')[0];
+    let ul = document.querySelector('#index-article-list').getElementsByTagName('ul')[0];
 
     function success(response) {
-        var resData = JSON.parse(response);
+        let resData = JSON.parse(response);
         resData.forEach(value => {
-            var el = new Article(value.fileName, value.title, value.content, (new Date(value.date)).toLocaleString());
+            let el = new Article(value.fileName, value.title, value.content, (new Date(value.date)).toLocaleString());
             ul.appendChild(el.node);
         });
     }
 
     function fail() {
-        var newLine = document.createElement('li');
+        let newLine = document.createElement('li');
         newLine.innerText = `List Load Faild :-(`;
         ul.appendChild(newLine);
     }
 
-    var request = new XMLHttpRequest(); // New XMLHttpRequest Object
+    let request = new XMLHttpRequest(); // New XMLHttpRequest Object
 
     request.onreadystatechange = () => { // invoked when readyState changes
         if (request.readyState === 4) { // request succeed
@@ -75,7 +75,7 @@ function loadArticleList() {
                 return fail();
             }
         }
-    }
+    };
 
     // send request
     request.open('GET', '/api/archive-list');
@@ -86,10 +86,10 @@ function loadArticleContent(fileName, fromState) {
     function success(response) {
         if (!fromState) {
             history.pushState({
-                originTitle: fileName,
-                type: 'archive',
-                originPathName: window.location.pathname
-            },
+                    originTitle: fileName,
+                    type: 'archive',
+                    originPathName: window.location.pathname
+                },
                 fileName,
                 `/archive/${fileName}`
             );
@@ -107,7 +107,7 @@ function loadArticleContent(fileName, fromState) {
         document.getElementById('index-article-content').innerText += `Error Code: ${code}`;
     }
 
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
 
     request.onreadystatechange = () => {
         if (request.readyState === 4) {
@@ -117,7 +117,7 @@ function loadArticleContent(fileName, fromState) {
                 return fail(request.status);
             }
         }
-    }
+    };
 
     request.open('GET', `/archive/${fileName}`);
     request.setRequestHeader('pushState-Ajax', true);
@@ -125,12 +125,12 @@ function loadArticleContent(fileName, fromState) {
 }
 
 function loadMusicRecord() {
-    var ul = document.getElementById('index-music-record');
+    let ul = document.getElementById('index-music-record');
 
     function success(rawList) {
         rawList.forEach((value, index) => {
             if (index > 9) return;
-            var el = new SideListItem(
+            let el = new SideListItem(
                 `${value.name} - ${value.artistName}`,
                 `http://music.163.com/#/song?id=${value.id}`,
                 `_blank`
@@ -144,18 +144,18 @@ function loadMusicRecord() {
         ul.innerText = 'Music Record Load Faild :-(';
     }
 
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
 
     request.onreadystatechange = () => {
         if (request.readyState === 4) {
             if (request.status === 200) {
-                var rawList = JSON.parse(request.response);
+                let rawList = JSON.parse(request.response);
                 return success(rawList);
             } else {
                 return fail();
             }
         }
-    }
+    };
 
     request.open('GET', `/api/music-record`);
     request.send();
@@ -169,22 +169,21 @@ window.onload = () => {
         e.preventDefault();
         history.pushState({ originTitle: '', type: 'index', originPathName: window.location.pathname }, '', '/');
         showIndex();
-    }
-}
+    };
+};
 
 window.onpopstate = (e) => {
     if (!e.state) {
-        var pn = window.location.pathname;
-        var archiveRegex = /\/archive\/(.+)/
+        let pn = window.location.pathname;
+        let archiveRegex = /\/archive\/(.+)/;
         if (pn === '/') {
             showIndex();
         } else if (archiveRegex.test(pn)) {
             loadArticleContent(archiveRegex.exec(pn)[1]);
         }
-    }
-    else if (e.state.type === 'index') {
+    } else if (e.state.type === 'index') {
         showIndex();
     } else if (e.state.type === 'archive') {
         loadArticleContent(e.state.originTitle, true);
     }
-}
+};
