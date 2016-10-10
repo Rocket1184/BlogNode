@@ -109,9 +109,11 @@ function ServerHandler(request, response) {
 Config.getHttpsOptions((err, opt) => {
     if (!err) {
         let httpsServer = https.createServer(opt, ServerHandler);
-        let httpsPort = process.env.HTTPS_PORT || Config.options.server.httpsPort ||8443;
+        let httpsPort = process.env.HTTPS_PORT || Config.getGlobalOptions().httpsPort ||8443;
         httpsServer.listen(httpsPort);
         console.log(`[Node Server] HTTPS Server running on https://127.0.0.1:${httpsPort}`);
+    } else {
+        console.log(`[Node Server] HTTPS not enabled cause ${err.message}`);
     }
 });
 
