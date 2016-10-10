@@ -10,7 +10,7 @@ const NeteaseApi = require('./lib/NeteaseApiAndroid');
 const ContentType = require('./lib/HtmlContentType');
 const ArchiveReader = require('./lib/ArchiveReader');
 const ViewPageBuilder = require('./lib/ViewPageBuilder');
-const HttpsOption = require('./lib/HttpsOption');
+const Config = require('./lib/Config');
 
 const root = path.resolve('.');
 
@@ -34,7 +34,7 @@ fs.readFile(path.join(root, '/page/view.html'), (err, data) => {
 
 NeteaseApi.init(76980626, 4 * 3600 * 1000);
 ArchiveReader.init(path.resolve(root, 'archive'));
-HttpsOption.init(path.resolve(root, 'config.json'));
+Config.init(path.resolve(root, 'config.json'));
 
 function ServerHandler(request, response) {
     console.log(`[Node Server] ${request.method}: ${request.url}`);
@@ -106,10 +106,10 @@ function ServerHandler(request, response) {
 }
 
 // try if support https
-HttpsOption.get((err, opt) => {
+Config.getHttpsOptions((err, opt) => {
     if (!err) {
         let httpsServer = https.createServer(opt, ServerHandler);
-        let httpsPort = process.env.HTTPS_PORT || 8443;
+        let httpsPort = process.env.HTTPS_PORT || Config.options.server.httpsPort ||8443;
         httpsServer.listen(httpsPort);
         console.log(`[Node Server] HTTPS Server running on https://127.0.0.1:${httpsPort}`);
     }
