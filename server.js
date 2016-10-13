@@ -105,22 +105,32 @@ function ServerHandler(request, response) {
     }
 }
 
+function RedirectHandler(request, response) {
+    if (request.headers.host) {
+        let fullUrl = request.headers.host;
+        console.log(`[Redirect] httpUrl: ${fullUrl}`);
+        // fullUrl = fullUrl.replace(/\:\d+/, `:${global.httpsPort}`);
+        response.writeHead(301, { 'Location': `https://${fullUrl}` });
+    }
+    response.end();
+}
+
+Config.getGlobalOptions(opt => {
+    let httpPort = process.env.PORT || opt.port || 8080;
+    let server = http.createServer(RedirectHandler);
+    server.listen(httpPort);
+    console.log(`[Node Server] HTTP Server running on http://127.0.0.1:${httpPort}`);
+});
+
 // try if support https
 Config.getHttpsOptions((err, opt) => {
     if (!err) {
-        let httpsServer = https.createServer(opt, ServerHandler);
-        let httpsPort = process.env.HTTPS_PORT || Config.getGlobalOptions().httpsPort ||8443;
+        let httpsServer = https.createServer(opt.cert, ServerHandler);
+        let httpsPort = process.env.HTTPS_PORT || opt.port || 8443;
+        global.httpsPort = httpsPort;
         httpsServer.listen(httpsPort);
         console.log(`[Node Server] HTTPS Server running on https://127.0.0.1:${httpsPort}`);
     } else {
         console.log(`[Node Server] HTTPS not enabled cause ${err.message}`);
     }
 });
-
-// port number from env
-let httpPort = process.env.PORT || 8080;
-let server = http.createServer(ServerHandler);
-
-server.listen(httpPort);
-
-console.log(`[Node Server] HTTP Server running on http://127.0.0.1:${httpPort}`);
