@@ -21,14 +21,13 @@ let regexs = {
 };
 
 function ServerHandler(request, response) {
-    console.log(`[Node Server] ${request.method}: ${request.url}`);
     /**path name in url */
     let pathName = url.parse(request.url).pathname;
     /**file path based on operation system*/
     let filePath = path.join(root, pathName);
     /**request fileName / maybe unuseable */
     let fileName = path.basename(filePath);
-    console.log(`[Node Server] pathName: ${pathName}, filePath: ${filePath}`);
+    console.log(`[Router] ${request.method}: ${pathName} -> ${filePath}`);
     if (request.method === 'GET') {
         if (pathName.indexOf('/api/') >= 0) {
             // this is a api request
@@ -93,7 +92,7 @@ function RedirectHandler(request, response) {
     if (request.headers.host) {
         let fullUrl = request.headers.host;
         console.log(`[Redirect] httpUrl: ${fullUrl}`);
-        // fullUrl = fullUrl.replace(/\:\d+/, `:${global.httpsPort}`);
+        fullUrl = fullUrl.replace(/\:\d+/, `:${global.httpsPort}`);
         response.writeHead(301, { 'Location': `https://${fullUrl}` });
     }
     response.end();
@@ -125,7 +124,7 @@ Config.get(path.resolve(root, 'config.json'), opt => {
         server = http.createServer(ServerHandler);
     }
     server.listen(httpPort);
-    console.log(`[Node Server] HTTP Server running on http://127.0.0.1:${httpPort}`);
+    console.log(`[Server] HTTP Server running on http://127.0.0.1:${httpPort}`);
 
     /**if Https enabled in config */
     if (opt.server.enableHttps === true) {
@@ -135,9 +134,9 @@ Config.get(path.resolve(root, 'config.json'), opt => {
                 let httpsPort = process.env.HTTPS_PORT || opt.server.httpsPort || 8443;
                 global.httpsPort = httpsPort;
                 httpsServer.listen(httpsPort);
-                console.log(`[Node Server] HTTPS Server running on https://127.0.0.1:${httpsPort}`);
+                console.log(`[Server] HTTPS Server running on https://127.0.0.1:${httpsPort}`);
             } else {
-                console.log(`[Node Server] HTTPS not enabled cause ${err.message}`);
+                console.log(`[Server] HTTPS not enabled cause ${err.message}`);
             }
         });
     }
