@@ -1,5 +1,7 @@
 # VSCode config
 .vscode
+jsconfig.json
+tsconfig.json
 
 # Temp files
 /page/current404.html
