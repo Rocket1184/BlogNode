@@ -1,6 +1,16 @@
+# VSCode config
 .vscode
+
+# Temp files
 /page/current404.html
-/*.json
+netease_music_record_*.json
+
+# npm & typings
 /typings
+/node_modules
+
+# nohup log
 nohup.out
+
+# Server file
 /static/*
