@@ -10,6 +10,7 @@ const NeteaseApi = require('./lib/NeteaseApiAndroid');
 const ContentType = require('./lib/HtmlContentType');
 const ArchiveReader = require('./lib/ArchiveReader');
 const ViewPageBuilder = require('./lib/ViewPageBuilder');
+const HttpsOption = require('./lib/HttpsOption');
 const Config = require('./lib/Config');
 
 const root = path.resolve('.');
@@ -18,23 +19,6 @@ let regexs = {
     nodeVersion: /\$\{process\.versions\.node\}/,
     extName: /\w+\.(\w+)$/
 };
-
-/**init Current Version 404 page. */
-fs.readFile(path.join(root, '/page/404.html'), (err, data) => {
-    let ver = process.version;
-    let current404 = data.toString().replace(regexs.nodeVersion, ver);
-    let page404 = fs.createWriteStream(path.join(root, '/page/current404.html'));
-    page404.end(current404, 'utf8');
-});
-
-/**init archive view page template */
-fs.readFile(path.join(root, '/page/view.html'), (err, data) => {
-    ViewPageBuilder.init(data.toString());
-});
-
-NeteaseApi.init(76980626, 4 * 3600 * 1000);
-ArchiveReader.init(path.resolve(root, 'archive'));
-Config.init(path.resolve(root, 'config.json'));
 
 function ServerHandler(request, response) {
     console.log(`[Node Server] ${request.method}: ${request.url}`);
@@ -115,9 +99,26 @@ function RedirectHandler(request, response) {
     response.end();
 }
 
-Config.getGlobalOptions(opt => {
+Config.get(path.resolve(root, 'config.json'), opt => {
+    /**init Current Version 404 page. */
+    fs.readFile(opt.resourcePath['404Page'], (err, data) => {
+        let ver = process.version;
+        let current404 = data.toString().replace(regexs.nodeVersion, ver);
+        let page404 = fs.createWriteStream(path.join(root, '/page/current404.html'));
+        page404.end(current404, 'utf8');
+    });
+
+    /**init archive view page template */
+    fs.readFile(opt.resourcePath['viewPage'], (err, data) => {
+        ViewPageBuilder.init(data.toString());
+    });
+
+    NeteaseApi.init(opt.addons.netease.uid, opt.addons.netease.expireTime);
+    ArchiveReader.init(opt.resourcePath['archive']);
+
     let server;
-    let httpPort = process.env.PORT || opt.port || 8080;
+    let httpPort = process.env.PORT || opt.server.port || 8080;
+    /**if redirect enabled in config */
     if (opt.server.redirectHttpToHttps == true) {
         server = http.createServer(RedirectHandler);
     } else {
@@ -125,17 +126,19 @@ Config.getGlobalOptions(opt => {
     }
     server.listen(httpPort);
     console.log(`[Node Server] HTTP Server running on http://127.0.0.1:${httpPort}`);
-});
 
-// try if support https
-Config.getHttpsOptions((err, opt) => {
-    if (!err) {
-        let httpsServer = https.createServer(opt.cert, ServerHandler);
-        let httpsPort = process.env.HTTPS_PORT || opt.port || 8443;
-        global.httpsPort = httpsPort;
-        httpsServer.listen(httpsPort);
-        console.log(`[Node Server] HTTPS Server running on https://127.0.0.1:${httpsPort}`);
-    } else {
-        console.log(`[Node Server] HTTPS not enabled cause ${err.message}`);
+    /**if Https enabled in config */
+    if (opt.server.enableHttps === true) {
+        HttpsOption.get(opt.httpsOptions, (err, httpsOpt) => {
+            if (!err) {
+                let httpsServer = https.createServer(httpsOpt, ServerHandler);
+                let httpsPort = process.env.HTTPS_PORT || opt.server.httpsPort || 8443;
+                global.httpsPort = httpsPort;
+                httpsServer.listen(httpsPort);
+                console.log(`[Node Server] HTTPS Server running on https://127.0.0.1:${httpsPort}`);
+            } else {
+                console.log(`[Node Server] HTTPS not enabled cause ${err.message}`);
+            }
+        });
     }
 });
