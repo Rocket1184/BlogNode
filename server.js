@@ -116,8 +116,13 @@ function RedirectHandler(request, response) {
 }
 
 Config.getGlobalOptions(opt => {
+    let server;
     let httpPort = process.env.PORT || opt.port || 8080;
-    let server = http.createServer(RedirectHandler);
+    if (opt.server.redirectHttpToHttps == true) {
+        server = http.createServer(RedirectHandler);
+    } else {
+        server = http.createServer(ServerHandler);
+    }
     server.listen(httpPort);
     console.log(`[Node Server] HTTP Server running on http://127.0.0.1:${httpPort}`);
 });
