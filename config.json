@@ -1,14 +1,14 @@
 {
     "server":{
         "port": 8080,
-        "httpsPort": 4433,
-        "enableHttps": true,
+        "httpsPort": 8443,
+        "enableHttps": false,
         "redirectHttpToHttps": false
     },
     "httpsOptions": {
-        "ca": "/home/rocka/Downloads/Cert/chain.pem",
-        "key": "/home/rocka/Downloads/Cert/privkey.pem",
-        "cert": "/home/rocka/Downloads/Cert/cert.pem"
+        "ca": "/path/to/chain.pem",
+        "key": "/path/to/privkey.pem",
+        "cert": "/path/to/cert.pem"
     },
     "resourcePath": {
         "archive": "./archive",
