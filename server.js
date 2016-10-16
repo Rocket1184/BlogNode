@@ -6,14 +6,16 @@ const path = require('path');
 const url = require('url');
 const fs = require('fs');
 
+const Logger = require('./lib/Logger');
+const Config = require('./lib/Config');
 const NeteaseApi = require('./lib/NeteaseApiAndroid');
+const HttpsOption = require('./lib/HttpsOption');
 const ContentType = require('./lib/HtmlContentType');
 const ArchiveReader = require('./lib/ArchiveReader');
 const ViewPageBuilder = require('./lib/ViewPageBuilder');
-const HttpsOption = require('./lib/HttpsOption');
-const Config = require('./lib/Config');
 
 const root = path.resolve('.');
+const logger = new Logger.Logger();
 
 let regexs = {
     nodeVersion: /\$\{process\.versions\.node\}/,
@@ -27,7 +29,7 @@ function ServerHandler(request, response) {
     let filePath = path.join(root, pathName);
     /**request fileName / maybe unuseable */
     let fileName = path.basename(filePath);
-    console.log(`[Router] ${request.method}: ${pathName} -> ${filePath}`);
+    logger.log(`[Router] ${request.method}: ${pathName} -> ${filePath}`);
     if (request.method === 'GET') {
         if (pathName.indexOf('/api/') >= 0) {
             // this is a api request
@@ -91,7 +93,7 @@ function ServerHandler(request, response) {
 function RedirectHandler(request, response) {
     if (request.headers.host) {
         let fullUrl = request.headers.host;
-        console.log(`[Redirect] httpUrl: ${fullUrl}`);
+        logger.log(`[Redirect] httpUrl: ${fullUrl}`);
         fullUrl = fullUrl.replace(/\:\d+/, `:${global.httpsPort}`);
         response.writeHead(301, { 'Location': `https://${fullUrl}` });
     }
@@ -124,7 +126,7 @@ Config.get(path.resolve(root, 'config.json'), opt => {
         server = http.createServer(ServerHandler);
     }
     server.listen(httpPort);
-    console.log(`[Server] HTTP Server running on http://127.0.0.1:${httpPort}`);
+    logger.log(`[Server] HTTP Server running on http://127.0.0.1:${httpPort}`);
 
     /**if Https enabled in config */
     if (opt.server.enableHttps === true) {
@@ -134,9 +136,9 @@ Config.get(path.resolve(root, 'config.json'), opt => {
                 let httpsPort = process.env.HTTPS_PORT || opt.server.httpsPort || 8443;
                 global.httpsPort = httpsPort;
                 httpsServer.listen(httpsPort);
-                console.log(`[Server] HTTPS Server running on https://127.0.0.1:${httpsPort}`);
+                logger.log(`[Server] HTTPS Server running on https://127.0.0.1:${httpsPort}`);
             } else {
-                console.log(`[Server] HTTPS not enabled cause ${err.message}`);
+                logger.log(`[Server] HTTPS not enabled cause ${err.message}`);
             }
         });
     }
