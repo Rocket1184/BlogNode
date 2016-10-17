@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "A simple blog server build with NodeJS",
   "main": "server.js",
+  "engines": {
+    "node": "latest"
+  },
   "scripts": {
     "start": "node server.js",
     "nohup": "nohup node server.js&"
@@ -11,5 +14,5 @@
     "type": "git",
     "url": "https://github.com/Rocket1184/BlogNode.git"
   },
-  "author": "r0cka <r0cka@outlook.com>"
+  "author": "rocka <r0cka@outlook.com>"
 }
