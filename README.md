@@ -9,8 +9,9 @@ a simple and light blog program using nodejs.
 
 ## Features
 - Pjax everywhere
+- Config via Json file
 - Responsive layout [see Demos](./DemoPic)
-- Get your Netease Cloud Music listening record
+- Get Netease Cloud Music listening record
 
 ## Quick Start
 Clone the repository
@@ -32,7 +33,7 @@ Open in browser
 - [ ] Writing new article in browser
 - [ ] Comments
 - [ ] Archive by time
-- [ ] Markdown support
+- [x] Markdown support
 
 ## Furthermore
 - OAuth for comments
