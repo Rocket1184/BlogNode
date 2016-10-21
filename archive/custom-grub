@@ -1,0 +1,140 @@
+Title: GRUB 折腾记
+Date: Oct 21 2016 23:49:42 GMT+0800
+Tags: Linux
+==========
+## 0
+
+数据结构课上闲着无聊，打开 `GnomeLook` 逛了一下，才发现居然有 [GRUB Themes](https://www.gnome-look.org/browse/cat/109/ord/latest/)这一项。想起基佬紫的 Ubuntu GRUB ，马上心生邪念，折腾一番。
+
+## 1 安装主题
+
+![Aurora Punguinis](https://rocka.me/static/174344-1.png)
+
+一开始找到了 [Aurora Pnguinis](https://www.gnome-look.org/p/1009533/) 这个主题，比较合我的口味。然后是常规的下载安装，不过步骤还是写一下吧：
+
+
+文件托管在Bitbucket上，下载好 `tar.gz` 包以后解压，
+
+```bash
+sudo mkdir /boot/grub/themes/
+sudo cp -R ./Aurora-Penguinis-GRUB2  /boot/grub/themes/
+```
+
+应用主题，需要编辑配置文件
+
+```bash
+sudo vim /etc/default/grub
+```
+
+加入一行
+
+```ini
+GRUB_THEME="/boot/grub/themes/Aurora-Penguinis-GRUB2/theme.txt"
+```
+
+然后刷新GRUB
+
+```bash
+sudo update-grub
+```
+
+重启即可看到改变。
+
+## 但是！！！
+
+有一些地方还是不完美的。比如说在 1080P 屏幕上，分辨率还是可怜的 640x480 ，图片模糊，字体丑不忍视，跟效果图完全就是两样。然后，折腾开始。
+
+### 调节分辨率
+
+```bash
+sudo vim /etc/default/grub
+```
+
+找到
+
+```ini
+GRUB_GFXMODE=640x480
+```
+
+修改为
+
+```ini
+GRUB_GFXMODE=1920x1080x32
+GRUB_GFXPAYLOAD_LINUX=keep
+```
+### 修改背景图片
+
+虽然默认图片很好看，但还是有点太艳丽了。我需要一个低调一点的。
+翻出一张还凑合的壁纸，打开`GIMP`手动磨砂玻璃：
+
+![GRUBbkg](http://images2015.cnblogs.com/blog/877509/201610/877509-20161021225815623-1826489478.png)
+
+然后复制到主题目录，给权限755：
+
+```bash
+cd /boot/grub/themes/Aurora-Penguinis-GRUB2
+sudo cp ~/Pictures/GRUBbkg.png ./
+sudo chmod 755 GRUBbkg.png
+```
+
+之后修改主题配置
+
+```bash
+sudo vim theme.txt
+```
+
+把背景图片指向刚复制过来的文件：
+
+```ini
+desktop-image: "GRUBbkg.png"
+```
+### 修改字体
+
+GRUB 使用的字体是 `.pf2` 格式的点阵字体，不能直接上 `.ttf` 之类的矢量字体，但是有办法转换。
+
+```bash
+sudo grub-mkfont  -o /boot/grub/fonts/UbuntuRegular24.pf2 \
+-s 24 /usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-R.ttf -v
+```
+
+输出可能会报一些错，不用管它。最后输出的字体信息要记着：
+
+```bash
+Font name: Ubuntu Regular 24
+Max width: 83
+Max height: 27
+Font ascent: 24
+Font descent: 5
+Number of glyph: 1194
+```
+
+复制字体到主题目录下，之后再次修改主题配置文件：
+
+```bash
+sudo vim theme.txt
+```
+
+这里只列出我修改过的项了：
+
+```ini
++ boot_menu {
+  item_font = "Ubuntu Regular 24"
+  item_height = 36 #orig 24
+  item_spacing = 18 #orig 12
+}
+
++ label {
+  font = "Ubuntu Regular 24"
+}
+```
+
+保存结束，最后别忘了更新：
+
+
+```bash
+sudo update-grub
+```
+
+## 3 最终效果
+
+![Final](http://images2015.cnblogs.com/blog/877509/201610/877509-20161021232656357-295867820.jpg)
