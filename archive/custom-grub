@@ -67,7 +67,7 @@ GRUB_GFXPAYLOAD_LINUX=keep
 虽然默认图片很好看，但还是有点太艳丽了。我需要一个低调一点的。
 翻出一张还凑合的壁纸，打开`GIMP`手动磨砂玻璃：
 
-![GRUBbkg](http://images2015.cnblogs.com/blog/877509/201610/877509-20161021225815623-1826489478.png)
+![GRUBbkg](https://images2015.cnblogs.com/blog/877509/201610/877509-20161021225815623-1826489478.png)
 
 然后复制到主题目录，给权限755：
 
@@ -137,4 +137,4 @@ sudo update-grub
 
 ## 3 最终效果
 
-![Final](http://images2015.cnblogs.com/blog/877509/201610/877509-20161021232656357-295867820.jpg)
+![Final](https://images2015.cnblogs.com/blog/877509/201610/877509-20161021232656357-295867820.jpg)
