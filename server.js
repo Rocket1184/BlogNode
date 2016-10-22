@@ -10,7 +10,7 @@ const Logger = require('./lib/Logger');
 const Config = require('./lib/Config');
 const NeteaseApi = require('./lib/NeteaseApiAndroid');
 const HttpsOption = require('./lib/HttpsOption');
-const ContentType = require('./lib/HtmlContentType');
+const HeaderBuilder = require('./lib/HeaderBuilder');
 const ArchiveReader = require('./lib/ArchiveReader');
 const ViewPageBuilder = require('./lib/ViewPageBuilder');
 
@@ -19,7 +19,7 @@ const logger = new Logger.Logger();
 
 let regexs = {
     nodeVersion: /\$\{process\.versions\.node\}/,
-    extName: /\w+\.(\w+)$/
+    extName: /\.([\w\d]+?)$/
 };
 
 function ServerHandler(request, response) {
@@ -35,11 +35,11 @@ function ServerHandler(request, response) {
             // this is a api request
             switch (pathName) {
                 case '/api/archive-list':
-                    response.writeHead(200, { 'Content-Type': 'application/json' });
+                    response.writeHead(200, HeaderBuilder.build('json'));
                     ArchiveReader.getSummaryList(e => response.end(JSON.stringify(e)));
                     break;
                 case '/api/music-record':
-                    response.writeHead(200, { 'Content-Type': 'application/json' });
+                    response.writeHead(200, HeaderBuilder.build('json'));
                     NeteaseApi.get(data => response.end(data));
                     break;
                 default:
@@ -64,7 +64,7 @@ function ServerHandler(request, response) {
                     if (pathName.indexOf('/archive/') >= 0) {
                         // get archive by url, must render page on server
                         ViewPageBuilder.build(path.join(root, pathName), res => {
-                            response.writeHead(200, { 'content-Type': 'text/html' });
+                            response.writeHead(200, HeaderBuilder.build('html',stats));
                             response.end(res);
                         });
                     } else {
@@ -73,16 +73,16 @@ function ServerHandler(request, response) {
                         try {
                             extName = regexs.extName.exec(pathName)[1];
                         } catch (e) {}
-                        response.writeHead(200, { 'content-Type': ContentType.get(extName) });
+                        response.writeHead(200, HeaderBuilder.build(extName,stats));
                         fs.createReadStream(filePath).pipe(response);
                     }
                 } else if (!err && pathName == '/') {
                     // cannot find file, but received index request
-                    response.writeHead(200, { 'content-Type': 'text/html' });
+                    response.writeHead(200, HeaderBuilder.build('html',stats));
                     fs.createReadStream('./page/index.html').pipe(response);
                 } else {
                     // file not found
-                    response.writeHead(404, { 'content-Type': 'text/html' });
+                    response.writeHead(200, HeaderBuilder.build('html',stats));
                     fs.createReadStream('./page/current404.html').pipe(response);
                 }
             });
