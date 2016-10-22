@@ -65,14 +65,14 @@ function ServerHandler(request, response) {
             fs.stat(filePath, (err, stats) => {
                 // no error occured, read file
                 if (!err && stats.isFile()) {
+                    // get archive by url, must render page on server
                     if (pathName.indexOf('/archive/') >= 0) {
-                        // get archive by url, must render page on server
                         ViewPageBuilder.build(path.join(root, pathName), res => {
-                            response.setHeader('Content-Length', res.length);
                             response.writeHead(200, HeaderBuilder.build('html', stats));
                             response.end(res);
                         });
                     } else {
+                        // cache for browser
                         if (request.headers['if-modified-since'] == stats.mtime.toUTCString()) {
                             response.writeHead(304, "Not Modified");
                             response.end();
