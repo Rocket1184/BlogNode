@@ -29,6 +29,10 @@ function ServerHandler(request, response) {
     let filePath = path.join(root, pathName);
     /**request fileName / maybe unuseable */
     let fileName = path.basename(filePath);
+    if (pathName == '/') {
+        pathName = './page/index.html';
+        filePath = path.join(root, pathName);
+    }
     logger.log(`[Router] ${request.method}: ${pathName} -> ${filePath}`);
     if (request.method === 'GET') {
         if (pathName.indexOf('/api/') >= 0) {
@@ -64,25 +68,26 @@ function ServerHandler(request, response) {
                     if (pathName.indexOf('/archive/') >= 0) {
                         // get archive by url, must render page on server
                         ViewPageBuilder.build(path.join(root, pathName), res => {
-                            response.writeHead(200, HeaderBuilder.build('html',stats));
+                            response.setHeader('Content-Length', res.length);
+                            response.writeHead(200, HeaderBuilder.build('html', stats));
                             response.end(res);
                         });
                     } else {
+                        if (request.headers['if-modified-since'] == stats.mtime.toUTCString()) {
+                            response.writeHead(304, "Not Modified");
+                            response.end();
+                            return;
+                        }
                         // get other resources
                         let extName;
-                        try {
-                            extName = regexs.extName.exec(pathName)[1];
-                        } catch (e) {}
-                        response.writeHead(200, HeaderBuilder.build(extName,stats));
+                        try { extName = regexs.extName.exec(pathName)[1]; } catch (e) {}
+                        response.setHeader('Content-Length', stats.size);
+                        response.writeHead(200, HeaderBuilder.build(extName, stats));
                         fs.createReadStream(filePath).pipe(response);
                     }
-                } else if (!err && pathName == '/') {
-                    // cannot find file, but received index request
-                    response.writeHead(200, HeaderBuilder.build('html',stats));
-                    fs.createReadStream('./page/index.html').pipe(response);
                 } else {
                     // file not found
-                    response.writeHead(200, HeaderBuilder.build('html',stats));
+                    response.writeHead(200, HeaderBuilder.build('html', stats));
                     fs.createReadStream('./page/current404.html').pipe(response);
                 }
             });
