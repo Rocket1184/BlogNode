@@ -97,7 +97,7 @@ function ServerHandler(request, response) {
 
 function RedirectHandler(request, response) {
     if (request.headers.host) {
-        let fullUrl = request.headers.host;
+        let fullUrl = request.headers.host + request.url;
         logger.log(`[Redirect] httpUrl: ${fullUrl}`);
         fullUrl = fullUrl.replace(/\:\d+/, `:${global.httpsPort}`);
         response.writeHead(301, { 'Location': `https://${fullUrl}` });
