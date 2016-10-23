@@ -53,11 +53,11 @@ function ServerHandler(request, response) {
             // pjax request
             ArchiveReader.getDetail(fileName, (err, archive) => {
                 if (!err) {
-                    response.writeHead(200, { 'content-Type': 'text/plain' });
+                    response.writeHead(200, HeaderBuilder.build('json', 'no-length', 'no-cache'));
                     response.end(JSON.stringify(archive));
                 } else {
-                    response.writeHead(404, { 'content-Type': 'text/plain' });
-                    response.end(err.message);
+                    response.writeHead(404, HeaderBuilder.build('json', 'no-length', 'no-cache'));
+                    response.end(JSON.stringify({ errCode: 404, msg: err.message }));
                 }
             });
         } else {
@@ -68,7 +68,7 @@ function ServerHandler(request, response) {
                     // get archive by url, must render page on server
                     if (pathName.indexOf('/archive/') >= 0) {
                         ViewPageBuilder.build(path.join(root, pathName), res => {
-                            response.writeHead(200, HeaderBuilder.build('html', stats));
+                            response.writeHead(200, HeaderBuilder.build('html', stats, 'no-length', 'no-cache'));
                             response.end(res);
                         });
                     } else {
@@ -81,7 +81,6 @@ function ServerHandler(request, response) {
                         // get other resources
                         let extName;
                         try { extName = regexs.extName.exec(pathName)[1]; } catch (e) {}
-                        response.setHeader('Content-Length', stats.size);
                         response.writeHead(200, HeaderBuilder.build(extName, stats));
                         fs.createReadStream(filePath).pipe(response);
                     }
