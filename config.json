@@ -1,14 +1,14 @@
 {
     "server":{
         "port": 8080,
-        "httpsPort": 8443,
-        "enableHttps": false,
-        "redirectHttpToHttps": false
+        "httpsPort":8443,
+        "enableHttps": true,
+        "redirectHttpToHttps": true
     },
     "httpsOptions": {
-        "ca": "/path/to/chain.pem",
-        "key": "/path/to/privkey.pem",
-        "cert": "/path/to/cert.pem"
+        "ca": "/etc/letsencrypt/live/rocka.me/chain.pem",
+        "key": "/etc/letsencrypt/live/rocka.me/privkey.pem",
+        "cert":"/etc/letsencrypt/live/rocka.me/cert.pem"
     },
     "resourcePath": {
         "archive": "./archive",
