@@ -102,9 +102,9 @@ function loadArticleContent(fileName, fromState) {
         document.getElementById('index-article-content').innerHTML = data.content;
     }
 
-    function fail(code) {
-        document.getElementById('index-article-title').innerText = 'Article Load Faild: Please Refresh Page And Try Again.';
-        document.getElementById('index-article-content').innerText += `Error Code: ${code}`;
+    function fail(response) {
+        document.getElementById('index-article-title').innerText = 'Article Load Faild :-(';
+        document.getElementById('index-article-content').innerText = response;
     }
 
     let request = new XMLHttpRequest();
@@ -114,7 +114,7 @@ function loadArticleContent(fileName, fromState) {
             if (request.status === 200) {
                 return success(request.response);
             } else {
-                return fail(request.status);
+                return fail(request.response);
             }
         }
     };
