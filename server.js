@@ -13,6 +13,7 @@ const HttpsOption = require('./lib/HttpsOption');
 const HeaderBuilder = require('./lib/HeaderBuilder');
 const ArchiveReader = require('./lib/ArchiveReader');
 const ViewPageBuilder = require('./lib/ViewPageBuilder');
+const RangeFileReader = require('./lib/RangeFileReader');
 
 const root = path.resolve('.');
 const logger = new Logger.Logger();
@@ -53,10 +54,10 @@ function ServerHandler(request, response) {
             // pjax request
             ArchiveReader.getDetail(fileName, (err, archive) => {
                 if (!err) {
-                    response.writeHead(200, HeaderBuilder.build('json', 'no-length', 'no-cache'));
+                    response.writeHead(200, HeaderBuilder.build('json', { length: false, cache: false }));
                     response.end(JSON.stringify(archive));
                 } else {
-                    response.writeHead(404, HeaderBuilder.build('json', 'no-length', 'no-cache'));
+                    response.writeHead(404, HeaderBuilder.build('json', { length: false, cache: false }));
                     response.end(JSON.stringify({ errCode: 404, msg: err.message }));
                 }
             });
@@ -68,7 +69,7 @@ function ServerHandler(request, response) {
                     // get archive by url, must render page on server
                     if (pathName.indexOf('/archive/') >= 0) {
                         ViewPageBuilder.build(path.join(root, pathName), res => {
-                            response.writeHead(200, HeaderBuilder.build('html', stats, 'no-length', 'no-cache'));
+                            response.writeHead(200, HeaderBuilder.build('html', { stats: stats, length: false, cache: false }));
                             response.end(res);
                         });
                     } else {
@@ -81,12 +82,28 @@ function ServerHandler(request, response) {
                         // get other resources
                         let extName;
                         try { extName = regexs.extName.exec(pathName)[1]; } catch (e) {}
-                        response.writeHead(200, HeaderBuilder.build(extName, stats));
-                        fs.createReadStream(filePath).pipe(response);
+                        if (request.headers['range']) {
+                            let rawRange = request.headers['range'];
+                            let ranger;
+                            let file;
+                            try {
+                                ranger = RangeFileReader.createRange(rawRange, stats);
+                                file = RangeFileReader.stream(filePath, ranger);
+                                stats.size = ranger.size();
+                                response.writeHead(206, 'Partial Content', HeaderBuilder.build(extName, { stats: stats, range: ranger }));
+                                file.pipe(response);
+                            } catch (err) {
+                                response.writeHead(416, 'Unsupported Range');
+                                response.end();
+                            }
+                        } else {
+                            response.writeHead(200, HeaderBuilder.build(extName, { stats: stats }));
+                            fs.createReadStream(filePath).pipe(response);
+                        }
                     }
                 } else {
                     // file not found
-                    response.writeHead(200, HeaderBuilder.build('html', stats));
+                    response.writeHead(200, HeaderBuilder.build('html', { stats: stats }));
                     fs.createReadStream('./page/current404.html').pipe(response);
                 }
             });
