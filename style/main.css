@@ -49,7 +49,7 @@ div.nav {
     height: 3rem;
     width: 100%;
     background-color: #009688;
-    opacity: 0.8;
+    opacity: 0.9;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
     z-index: 1000;
 }
@@ -82,7 +82,7 @@ li.nav>a {
 .main {
     position: relative;
     width: 1140px;
-    margin: 4rem auto;
+    margin: 1rem auto;
     font-size: 0;
 }
 
@@ -90,6 +90,45 @@ li.nav>a {
     width: 850px;
     display: inline-block;
     margin-right: 30px;
+}
+
+.header {
+    font-size: 0;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    overflow: hidden;
+    max-height: 20rem;
+    position: relative;
+}
+
+#index-header-img {
+    width: 100%;
+}
+
+#index-header-text {
+    margin: 0 1rem;
+    margin-left: 1rem;
+    overflow: hidden;
+    position: absolute;
+    top: 40%;
+}
+
+#index-header-title {
+    font-size: 2.2rem;
+}
+
+#index-header-sub {
+    font-size: 1.4rem;
+}
+
+#index-header-title,
+#index-header-sub {
+    color: white;
+    text-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+}
+
+#view-header {
+    height: 3rem;
 }
 
 .stack {
@@ -136,7 +175,7 @@ li.nav>a {
     margin-bottom: 1.5rem;
 }
 
-.sidebox .header {
+.sidebox .side-header {
     background-color: #2CA499;
     color: white;
     padding: 0.6rem 1rem;
