@@ -2,47 +2,53 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Rocka's Blog</title>
-    <link rel="stylesheet" href="../style/main.css" type="text/css">
-    <link rel="stylesheet" href="../style/mobile.css" type="text/css">
-    <script src="../script/index.js"></script>
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta name="theme-color" content="#009688">
+	<meta charset="UTF-8">
+	<title>Rocka's Blog</title>
+	<link rel="stylesheet" href="../style/main.css" type="text/css">
+	<link rel="stylesheet" href="../style/mobile.css" type="text/css">
+	<script src="../script/index.js"></script>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta name="theme-color" content="#009688">
 </head>
 
 <body>
-    <div class="nav">
-        <ul class="nav">
-            <li class="nav">
-                <a id="view-gotoIndex" href="/">Rocka's Blog</a>
-            </li>
-        </ul>
-    </div>
+	<div class="nav">
+		<ul class="nav">
+			<li class="nav">
+				<a id="view-gotoIndex" href="/">Rocka's Blog</a>
+			</li>
+		</ul>
+	</div>
 
-    <div id="view-header"></div>
+	<div id="view-header" class="header">
+		<img id="index-header-img" src="/static/NASABahamas.jpg" alt="">
+		<div id="index-header-text">
+			<h1 id="index-header-title">Talk is cheap</h1>
+			<h2 id="index-header-sub">Show me the code</h2>
+		</div>
+	</div>
 
-    <div class="main">
-        <div class="body">
-            <div id="index-article-list" class="hidden">
-                <ul>
-                    <!--${archiveList}-->
-                </ul>
-            </div>
+	<div class="main">
+		<div class="body">
+			<div id="index-article-list" class="hidden">
+				<ul>
+					<!--${archiveList}-->
+				</ul>
+			</div>
 
-            <div id="index-article-view" class="stack">
-                <h3 id="index-article-title" class="title">${article.title}</h3>
-                <article id="index-article-content">${article.content}</article>
-            </div>
-        </div>
+			<div id="index-article-view" class="stack">
+				<h3 id="index-article-title" class="title">${article.title}</h3>
+				<article id="index-article-content">${article.content}</article>
+			</div>
+		</div>
 
-        <div class="side">
-            <div class="sidebox" id="music-record">
-                <h3 class="header">Rcecntly Listened</h3>
-                <ul id="index-music-record"></ul>
-            </div>
-        </div>
-    </div>
+		<div class="side">
+			<div class="sidebox" id="music-record">
+				<h3 class="header">Rcecntly Listened</h3>
+				<ul id="index-music-record"></ul>
+			</div>
+		</div>
+	</div>
 </body>
 
 </html>
