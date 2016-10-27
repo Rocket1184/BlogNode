@@ -50,17 +50,6 @@ function ServerHandler(request, response) {
                 default:
                     break;
             }
-        } else if (request.headers['pushstate-ajax']) {
-            // pjax request
-            ArchiveReader.getDetail(fileName, (err, archive) => {
-                if (!err) {
-                    response.writeHead(200, HeaderBuilder.build('json', { length: false, cache: false }));
-                    response.end(JSON.stringify(archive));
-                } else {
-                    response.writeHead(404, HeaderBuilder.build('json', { length: false, cache: false }));
-                    response.end(JSON.stringify({ errCode: 404, msg: err.message }));
-                }
-            });
         } else {
             // try to find and read local file
             fs.stat(filePath, (err, stats) => {
@@ -68,10 +57,23 @@ function ServerHandler(request, response) {
                 if (!err && stats.isFile()) {
                     // get archive by url, must render page on server
                     if (pathName.indexOf('/archive/') >= 0) {
-                        ViewPageBuilder.build(path.join(root, pathName), res => {
-                            response.writeHead(200, HeaderBuilder.build('html', { stats: stats, length: false, cache: false }));
-                            response.end(res);
-                        });
+                        if (request.headers['pushstate-ajax']) {
+                            // pjax request
+                            ArchiveReader.getDetail(fileName, (err, archive) => {
+                                if (!err) {
+                                    response.writeHead(200, HeaderBuilder.build('json', { length: false, cache: false }));
+                                    response.end(JSON.stringify(archive));
+                                } else {
+                                    response.writeHead(404, HeaderBuilder.build('json', { length: false, cache: false }));
+                                    response.end(JSON.stringify({ errCode: 404, msg: err.message }));
+                                }
+                            });
+                        } else {
+                            ViewPageBuilder.build(path.join(root, pathName), res => {
+                                response.writeHead(200, HeaderBuilder.build('html', { stats: stats, length: false, cache: false }));
+                                response.end(res);
+                            });
+                        }
                     } else {
                         // cache for browser
                         if (request.headers['if-modified-since'] == stats.mtime.toUTCString()) {
