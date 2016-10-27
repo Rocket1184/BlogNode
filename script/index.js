@@ -67,6 +67,18 @@ function ToggleView() {
     header.setAttribute('id', header.id === 'index-header' ? 'view-header' : 'index-header');
 }
 
+function bidingArticleEntry() {
+    let ul = document.getElementById('index-article-list');
+    [].forEach.call(ul, li => {
+        let herf = li.getAttribute('href');
+        let fileName = /\/(.+)/.exec(herf);
+        li.onclick = e => {
+            e.preventDefault();
+            loadArticleContent(fileName);
+        };
+    });
+}
+
 function loadArticleList() {
     let ul = document.querySelector('#index-article-list').getElementsByTagName('ul')[0];
 
