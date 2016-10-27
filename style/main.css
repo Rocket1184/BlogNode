@@ -111,6 +111,8 @@ li.nav>a {
     overflow: hidden;
     position: absolute;
     top: 40%;
+    width: 1140px;
+    margin: 0 calc(50% - 570px);
 }
 
 #index-header-title {

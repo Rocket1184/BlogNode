@@ -6,6 +6,9 @@
     .stack {
         width: 610px;
     }
+    #index-header-text {
+        margin: 0 calc(50% - 450px);
+    }
 }
 
 @media screen and (max-width: 940px) {
@@ -14,12 +17,13 @@
         width: 100%;
         max-width: 610px;
     }
-
+    #index-header-text {
+        margin: 0 calc(50% - 305px);
+    }
     .side {
         width: 610px;
         text-align-last: justify;
     }
-
     .sidebox {
         width: 290px;
         display: inline-block;
@@ -32,11 +36,14 @@
     .side {
         width: 100%;
     }
+    #index-header-text {
+        margin: 01rem;
+    }
     .body {
         margin: 0;
     }
     .stack,
-    .sidebox{
+    .sidebox {
         margin-left: 1rem;
         margin-right: 1rem;
         width: calc(100% - 2rem);
