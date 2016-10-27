@@ -131,7 +131,7 @@ li.nav>a {
 #view-header {
     margin-top: 3rem;
     height: 0;
-    overflow: hidden;
+    opacity: 0;
 }
 
 .stack {
