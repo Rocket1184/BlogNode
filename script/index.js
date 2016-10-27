@@ -1,48 +1,70 @@
 'use strict';
 
 /**
- * Create Index Article Element. Use Object.node to get the node.
+ * Index Article
  * 
- * @param {string} fileName
- * @param {string} title
- * @param {string} content
- * @param {string} footnote
+ * @class Article
  */
-function Article(fileName, title, content, footnote) {
-    this.node = document.createElement('li');
-    this.node.classList.add('stack');
-    this.node.innerHTML = [
-        `<a href="/archive/${fileName}" class="title">${title}</a>`,
-        `<pre class="content">${content}</pre>`,
-        `<span class="footnote">${footnote}</span>`,
-    ].join('');
-    this.node.getElementsByClassName('title')[0].onclick = e => {
-        e.preventDefault();
-        loadArticleContent(fileName);
-    };
+class Article {
+    /**
+     * Creates an instance of Article.
+     * 
+     * @param {any} fileName
+     * @param {any} title
+     * @param {any} content
+     * @param {any} footnote
+     * @param {any} node HTML Element of this article
+     * 
+     * @memberOf Article
+     */
+    constructor(fileName, title, content, footnote) {
+        this.node = document.createElement('li');
+        this.node.classList.add('stack');
+        this.node.innerHTML = [
+            `<a href="/archive/${fileName}" class="title">${title}</a>`,
+            `<pre class="content">${content}</pre>`,
+            `<span class="footnote">${footnote}</span>`,
+        ].join('');
+        this.node.getElementsByClassName('title')[0].onclick = e => {
+            e.preventDefault();
+            loadArticleContent(this.fileName);
+        };
+    }
 }
 
 /**
- * Create Sidebar List Line Element. Use Object.node to get the node.
+ * Sidebar/Sidebox list item
  * 
- * @param {string} content
- * @param {string} href
- * @param {string} target
+ * @class SideListItem
  */
-function SideListItem(content, href, target) {
-    this.node = document.createElement('li');
-    this.node.classList.add('side-li');
-    this.node.innerHTML = [
-        `<a href="${href}" target="${target}">${content}</a>`
-    ].join('');
+class SideListItem {
+    /**
+     * Creates an instance of SideListItem.
+     * 
+     * @param {any} content
+     * @param {any} href
+     * @param {any} target
+     * @param {any} node HTML element of this <li>
+     * 
+     * @memberOf SideListItem
+     */
+    constructor(content, href, target) {
+        this.node = document.createElement('li');
+        this.node.classList.add('side-li');
+        this.node.innerHTML = [
+            `<a href="${href}" target="${target}">${content}</a>`
+        ].join('');
+    }
 }
 
 /**
  * Hide article content and show article list.
  */
-function showIndex() {
-    document.getElementById('index-article-view').classList.add('hidden');
-    document.getElementById('index-article-list').classList.remove('hidden');
+function ToggleView() {
+    document.getElementById('index-article-view').classList.toggle('hidden');
+    document.getElementById('index-article-list').classList.toggle('hidden');
+    let header = document.getElementsByClassName('header')[0];
+    header.setAttribute('id', header.id === 'index-header' ? 'view-header' : 'index-header');
 }
 
 function loadArticleList() {
@@ -168,7 +190,7 @@ window.onload = () => {
     document.getElementById('view-gotoIndex').onclick = e => {
         e.preventDefault();
         history.pushState({ originTitle: '', type: 'index', originPathName: window.location.pathname }, '', '/');
-        showIndex();
+        ToggleView();
     };
 };
 
@@ -177,12 +199,12 @@ window.onpopstate = (e) => {
         let pn = window.location.pathname;
         let archiveRegex = /\/archive\/(.+)/;
         if (pn === '/') {
-            showIndex();
+            ToggleView();
         } else if (archiveRegex.test(pn)) {
             loadArticleContent(archiveRegex.exec(pn)[1]);
         }
     } else if (e.state.type === 'index') {
-        showIndex();
+        ToggleView();
     } else if (e.state.type === 'archive') {
         loadArticleContent(e.state.originTitle, true);
     }
