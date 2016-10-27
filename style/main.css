@@ -99,11 +99,8 @@ li.nav>a {
     height: 22rem;
     overflow: hidden;
     position: relative;
-}
-
-#index-header-img {
-    width: 100%;
-    position: absolute;
+    background-image: url('https://rocka.me/static/NASABahamas.jpg');
+    background-size: cover;
 }
 
 #index-header-text {
