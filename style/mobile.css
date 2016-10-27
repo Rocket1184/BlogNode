@@ -7,7 +7,7 @@
         width: 610px;
     }
     #index-header-text {
-        margin: 0 calc(50% - 450px);
+        margin: 9rem calc(50% - 450px);
     }
 }
 
@@ -18,7 +18,7 @@
         max-width: 610px;
     }
     #index-header-text {
-        margin: 0 calc(50% - 305px);
+        margin: 9rem calc(50% - 305px);
     }
     .side {
         width: 610px;
@@ -37,7 +37,8 @@
         width: 100%;
     }
     #index-header-text {
-        margin: 01rem;
+        margin: 9rem 1rem;
+        width: 100%;
     }
     .body {
         margin: 0;
