@@ -10,6 +10,7 @@ const Logger = require('./lib/Logger');
 const Config = require('./lib/Config');
 const NeteaseApi = require('./lib/NeteaseApiAndroid');
 const HttpsOption = require('./lib/HttpsOption');
+const IndexBuilder = require('./lib/IndexBuilder');
 const HeaderBuilder = require('./lib/HeaderBuilder');
 const ArchiveReader = require('./lib/ArchiveReader');
 const ViewPageBuilder = require('./lib/ViewPageBuilder');
@@ -19,7 +20,6 @@ const root = path.resolve('.');
 const logger = new Logger.Logger();
 
 let regexs = {
-    nodeVersion: /\$\{process\.versions\.node\}/,
     extName: /\.([\w\d]+?)$/
 };
 
@@ -30,11 +30,6 @@ function ServerHandler(request, response) {
     let filePath = path.join(root, pathName);
     /**request fileName / maybe unuseable */
     let fileName = path.basename(filePath);
-    if (pathName == '/') {
-        pathName = './page/index.html';
-        filePath = path.join(root, pathName);
-    }
-    logger.log(`[Router] ${request.method}: ${pathName} -> ${filePath}`);
     if (request.method === 'GET') {
         if (pathName.indexOf('/api/') >= 0) {
             // this is a api request
@@ -50,39 +45,52 @@ function ServerHandler(request, response) {
                 default:
                     break;
             }
-        } else if (request.headers['pushstate-ajax']) {
-            // pjax request
-            ArchiveReader.getDetail(fileName, (err, archive) => {
-                if (!err) {
-                    response.writeHead(200, HeaderBuilder.build('json', { length: false, cache: false }));
-                    response.end(JSON.stringify(archive));
-                } else {
-                    response.writeHead(404, HeaderBuilder.build('json', { length: false, cache: false }));
-                    response.end(JSON.stringify({ errCode: 404, msg: err.message }));
-                }
-            });
+            logger.log(`[Router] ${request.method} 200 ${pathName} -> API`);
+        } else if (pathName === '/') {
+            // get index
+            response.writeHead(200, HeaderBuilder.build('html', { cache: false }));
+            IndexBuilder.build(data => response.end(data));
+            logger.log(`[Router] ${request.method} 200 ${pathName} (Index)`);
         } else {
             // try to find and read local file
             fs.stat(filePath, (err, stats) => {
                 // no error occured, read file
                 if (!err && stats.isFile()) {
-                    // get archive by url, must render page on server
                     if (pathName.indexOf('/archive/') >= 0) {
-                        ViewPageBuilder.build(path.join(root, pathName), res => {
-                            response.writeHead(200, HeaderBuilder.build('html', { stats: stats, length: false, cache: false }));
-                            response.end(res);
-                        });
+                        if (request.headers['pushstate-ajax']) {
+                            // get archive using pjax
+                            ArchiveReader.getDetail(fileName, (err, archive) => {
+                                if (!err) {
+                                    response.writeHead(200, HeaderBuilder.build('json', { length: false, cache: false }));
+                                    response.end(JSON.stringify(archive));
+                                    logger.log(`[Router] ${request.method} 200 ${pathName} (pjax)`);
+                                } else {
+                                    response.writeHead(404, HeaderBuilder.build('json', { length: false, cache: false }));
+                                    response.end(JSON.stringify({ errCode: 404, msg: err.message }));
+                                    logger.log(`[Router] ${request.method} 404 ${pathName} (pjax)`);
+                                }
+                            });
+                        } else {
+                            // render view page serverSide
+                            ViewPageBuilder.build(path.join(root, pathName), res => {
+                                response.writeHead(200, HeaderBuilder.build('html', { stats: stats, length: false, cache: false }));
+                                response.end(res);
+                                logger.log(`[Router] ${request.method} 200 ${pathName} (Server Page)`);
+                            });
+                        }
                     } else {
                         // cache for browser
                         if (request.headers['if-modified-since'] == stats.mtime.toUTCString()) {
                             response.writeHead(304, "Not Modified");
                             response.end();
+                            logger.log(`[Router] ${request.method} 304 ${pathName}`);
                             return;
                         }
                         // get other resources
                         let extName;
                         try { extName = regexs.extName.exec(pathName)[1]; } catch (e) {}
                         if (request.headers['range']) {
+                            // using 'Range' header
                             let rawRange = request.headers['range'];
                             let ranger;
                             let file;
@@ -92,19 +100,24 @@ function ServerHandler(request, response) {
                                 stats.size = ranger.size();
                                 response.writeHead(206, 'Partial Content', HeaderBuilder.build(extName, { stats: stats, range: ranger }));
                                 file.pipe(response);
+                                logger.log(`[Router] ${request.method} 206 ${pathName} -> ${filePath} (Range:${rawRange})`);
                             } catch (err) {
                                 response.writeHead(416, 'Unsupported Range');
                                 response.end();
+                                logger.log(`[Router] ${request.method} 416 ${pathName} (Unsupported Range:${rawRange})`);
                             }
                         } else {
+                            // normal file request
                             response.writeHead(200, HeaderBuilder.build(extName, { stats: stats }));
                             fs.createReadStream(filePath).pipe(response);
+                            logger.log(`[Router] ${request.method} 200 ${pathName} -> ${filePath}`);
                         }
                     }
                 } else {
                     // file not found
                     response.writeHead(200, HeaderBuilder.build('html', { stats: stats }));
                     fs.createReadStream('./page/current404.html').pipe(response);
+                    logger.log(`[Router] ${request.method} 404 ${pathName}`);
                 }
             });
         }
@@ -125,7 +138,7 @@ Config.get(path.resolve(root, 'config.json'), opt => {
     /**init Current Version 404 page. */
     fs.readFile(opt.resourcePath['404Page'], (err, data) => {
         let ver = process.version;
-        let current404 = data.toString().replace(regexs.nodeVersion, ver);
+        let current404 = data.toString().replace('${process.version}', ver);
         let page404 = fs.createWriteStream(path.join(root, '/page/current404.html'));
         page404.end(current404, 'utf8');
     });
@@ -133,6 +146,10 @@ Config.get(path.resolve(root, 'config.json'), opt => {
     /**init archive view page template */
     fs.readFile(opt.resourcePath['viewPage'], (err, data) => {
         ViewPageBuilder.init(data.toString());
+    });
+
+    fs.readFile(path.join(root, '/page/index.html'), (err, data) => {
+        IndexBuilder.init(data.toString());
     });
 
     NeteaseApi.init(opt.addons.netease.uid, opt.addons.netease.expireTime);

@@ -92,25 +92,23 @@ li.nav>a {
     margin-right: 30px;
 }
 
-.header {
+#index-header {
     font-size: 0;
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
     width: 100%;
+    height: 22rem;
     overflow: hidden;
-    max-height: 20rem;
     position: relative;
-}
-
-#index-header-img {
-    width: 100%;
+    background-image: url('https://rocka.me/static/NASABahamas.jpg');
+    background-size: cover;
 }
 
 #index-header-text {
-    margin: 0 1rem;
     margin-left: 1rem;
     overflow: hidden;
-    position: absolute;
-    top: 40%;
+    position: relative;
+    width: 1140px;
+    margin: 9rem calc(50% - 570px);
 }
 
 #index-header-title {
@@ -128,7 +126,10 @@ li.nav>a {
 }
 
 #view-header {
-    height: 3rem;
+    margin-top: 3rem;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
 }
 
 .stack {

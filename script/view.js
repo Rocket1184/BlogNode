@@ -2,7 +2,6 @@
 
 document.addEventListener('readystatechange', () => {
     if (document.readyState === 'interactive') {
-        bidingArticleEntry();
         loadMusicRecord();
     }
 });
