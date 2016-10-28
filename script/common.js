@@ -212,8 +212,11 @@ function loadMusicRecord() {
 
 document.addEventListener('readystatechange', () => {
     if (document.readyState === 'interactive') {
-        document.getElementById('view-gotoIndex').onclick = e => {
+        loadMusicRecord();
+        let btnIndex = document.getElementById('view-gotoIndex');
+        btnIndex.onclick = e => {
             e.preventDefault();
+            btnIndex.blur();
             history.pushState({ originTitle: '', type: 'index', originPathName: window.location.pathname }, '', '/');
             showIndex();
             refreshArticleList();

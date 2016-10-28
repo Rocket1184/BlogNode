@@ -58,25 +58,25 @@ ul.nav {
     height: 100%;
     width: 1140px;
     margin: auto;
+    font-size: 0;
 }
 
 li.nav {
     height: 100%;
     display: inline-block;
     line-height: 3rem;
-    transition: background-color 0.4s;
-}
-
-li.nav:hover {
-    background-color: rgba(255, 255, 255, 0.2)
 }
 
 li.nav>a {
     color: white;
     display: inline-block;
     height: 100%;
-    width: 100%;
     padding: 0 1em;
+    transition: background-color 0.4s;
+}
+
+li.nav>a:hover {
+    background-color: rgba(255, 255, 255, 0.2)
 }
 
 .main {
@@ -187,7 +187,6 @@ li.nav>a {
     color: #444444;
     overflow: hidden;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 0.5rem 1rem;
     transition: background-color 0.4s;
 }
 
@@ -206,6 +205,8 @@ li.nav>a {
     text-overflow: ellipsis;
     display: inherit;
     overflow: hidden;
+    padding: 0.5rem 1rem;
+    outline: none;
 }
 
 
