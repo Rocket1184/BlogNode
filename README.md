@@ -33,7 +33,9 @@ Open in browser
 - [ ] Writing new article in browser
 - [ ] Comments
 - [ ] Archive by time
-- [x] Markdown support
+- [ ] Better Markdown support
+- [ ] Friendly 404 Page
+- [ ] Page Animation
 
 ## Furthermore
 - OAuth for comments
