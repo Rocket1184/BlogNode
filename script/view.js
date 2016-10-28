@@ -2,6 +2,6 @@
 
 document.addEventListener('readystatechange', () => {
     if (document.readyState === 'interactive') {
-        loadMusicRecord();
+        console.log('I\'m view.js =。=');
     }
 });
