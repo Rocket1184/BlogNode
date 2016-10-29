@@ -217,27 +217,27 @@ article>* {
 }
 
 article h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
 
 article h2 {
-    font-size: 1.8rem;
-}
-
-article h3 {
-    font-size: 1.6rem;
-}
-
-article h4 {
     font-size: 1.4rem;
 }
 
-article h5 {
+article h3 {
+    font-size: 1.3rem;
+}
+
+article h4 {
     font-size: 1.2rem;
 }
 
-article h6 {
+article h5 {
     font-size: 1.1rem;
+}
+
+article h6 {
+    font-size: 1rem;
 }
 
 article h1::after,
@@ -246,7 +246,7 @@ article h2::after {
     color: lightgrey;
     content: "-";
     display: block;
-    height: 2px;
+    height: 1px;
     background-color: currentColor;
 }
 
@@ -270,6 +270,8 @@ quote {
 }
 
 .code-block {
+    white-space: pre-line;
+    display: block;
     padding: 12px;
     max-width: 100%;
     overflow-y: hidden;
