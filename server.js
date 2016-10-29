@@ -31,7 +31,12 @@ function ServerHandler(request, response) {
     /**request fileName / maybe unuseable */
     let fileName = path.basename(filePath);
     if (request.method === 'GET') {
-        if (pathName.indexOf('/api/') >= 0) {
+        if (pathName === '/') {
+            // get index
+            response.writeHead(200, HeaderBuilder.build('html', { cache: false }));
+            IndexBuilder.build(data => response.end(data));
+            logger.log(`[Router] ${request.method} 200 ${pathName} (Index)`);
+        } else if (pathName.indexOf('/api/') === 0) {
             // this is a api request
             switch (pathName) {
                 case '/api/archive-list':
@@ -43,14 +48,11 @@ function ServerHandler(request, response) {
                     NeteaseApi.get(data => response.end(data));
                     break;
                 default:
+                    response.writeHead(404, HeaderBuilder.build('json'));
+                    response.end('{"error": "Invalid Api path."}');
                     break;
             }
             logger.log(`[Router] ${request.method} 200 ${pathName} -> API`);
-        } else if (pathName === '/') {
-            // get index
-            response.writeHead(200, HeaderBuilder.build('html', { cache: false }));
-            IndexBuilder.build(data => response.end(data));
-            logger.log(`[Router] ${request.method} 200 ${pathName} (Index)`);
         } else {
             // try to find and read local file
             fs.stat(filePath, (err, stats) => {
