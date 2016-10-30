@@ -69,10 +69,10 @@ class SideListItem {
 function ScrollTop(ms) {
     ms = ms || 500;
     let length = pageYOffset;
-    let step = length * 1000 / ms / 60;
+    let step = length * 1000 / ms / 60 + 1;
     let inv = setInterval(() => {
         scroll(pageXOffset, pageYOffset - step);
-    }, 16);
+    }, 15);
     setTimeout(() => {
         clearInterval(inv);
     },ms);
