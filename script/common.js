@@ -75,14 +75,14 @@ function ScrollTop(ms) {
     }, 15);
     setTimeout(() => {
         clearInterval(inv);
-    },ms);
+    }, ms);
 }
 
 /**
  * Hide article content and show article list.
  */
 function showIndex() {
-    ScrollTop();
+    scroll(0, 0);
     slideDownHide($('.main'));
     setTimeout(() => {
         $('#index-article-view').classList.add('hidden');
@@ -97,16 +97,14 @@ function showIndex() {
 }
 
 function showView() {
-    ScrollTop();
     slideDownHide($('.main'));
-    setTimeout(() => {
-        $('#index-article-view').classList.remove('hidden');
-        $('#index-article-list').classList.add('hidden');
-        slideUpShow($('.main'));
-    }, 500);
     let header = $('#index-header');
     slideUpHide(header);
     setTimeout(() => {
+        scroll(0, 0);
+        $('#index-article-view').classList.remove('hidden');
+        $('#index-article-list').classList.add('hidden');
+        slideUpShow($('.main'));
         header.classList.remove('hidden');
         header.setAttribute('id', 'view-header');
     }, 500);
