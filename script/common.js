@@ -1,5 +1,13 @@
 'use strict';
 
+function $(selector) {
+    return document.querySelectorAll(selector)[0];
+}
+
+function $s(selector) {
+    return document.querySelectorAll(selector);
+}
+
 /**
  * Index Article
  * 
@@ -58,21 +66,50 @@ class SideListItem {
     }
 }
 
+function ScrollTop(ms) {
+    ms = ms || 500;
+    let length = pageYOffset;
+    let step = length * 1000 / ms / 60 + 1;
+    let inv = setInterval(() => {
+        scroll(pageXOffset, pageYOffset - step);
+    }, 15);
+    setTimeout(() => {
+        clearInterval(inv);
+    },ms);
+}
+
 /**
  * Hide article content and show article list.
  */
 function showIndex() {
-    document.getElementById('index-article-view').classList.add('hidden');
-    document.getElementById('index-article-list').classList.remove('hidden');
-    let header = document.getElementsByClassName('header')[0];
-    header.setAttribute('id', 'index-header');
+    ScrollTop();
+    slideDownHide($('.main'));
+    setTimeout(() => {
+        $('#index-article-view').classList.add('hidden');
+        $('#index-article-list').classList.remove('hidden');
+        slideUpShow($('.main'));
+    }, 500);
+    let header = $('#view-header');
+    if (header) {
+        slideDownShow(header);
+        header.setAttribute('id', 'index-header');
+    }
 }
 
 function showView() {
-    document.getElementById('index-article-view').classList.remove('hidden');
-    document.getElementById('index-article-list').classList.add('hidden');
-    let header = document.getElementsByClassName('header')[0];
-    header.setAttribute('id', 'view-header');
+    ScrollTop();
+    slideDownHide($('.main'));
+    setTimeout(() => {
+        $('#index-article-view').classList.remove('hidden');
+        $('#index-article-list').classList.add('hidden');
+        slideUpShow($('.main'));
+    }, 500);
+    let header = $('#index-header');
+    slideUpHide(header);
+    setTimeout(() => {
+        header.classList.remove('hidden');
+        header.setAttribute('id', 'view-header');
+    }, 500);
 }
 
 function bidingArticleEntry() {
@@ -208,6 +245,38 @@ function loadMusicRecord() {
 
     request.open('GET', `/api/music-record`);
     request.send();
+}
+
+function slideDownHide(el) {
+    el.classList.add('slideDownHide');
+    setTimeout(() => {
+        el.classList.remove('slideDownHide');
+        el.classList.add('hidden');
+    }, 500);
+}
+
+function slideUpHide(el) {
+    el.classList.add('slideUpHide');
+    setTimeout(() => {
+        el.classList.remove('slideUpHide');
+        el.classList.add('hidden');
+    }, 500);
+}
+
+function slideDownShow(el) {
+    el.classList.add('slideDownShow');
+    el.classList.remove('hidden');
+    setTimeout(() => {
+        el.classList.remove('slideDownShow');
+    }, 500);
+}
+
+function slideUpShow(el) {
+    el.classList.add('slideUpShow');
+    el.classList.remove('hidden');
+    setTimeout(() => {
+        el.classList.remove('slideUpShow');
+    }, 500);
 }
 
 document.addEventListener('readystatechange', () => {
