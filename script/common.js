@@ -66,24 +66,50 @@ class SideListItem {
     }
 }
 
+function ScrollTop(ms) {
+    ms = ms || 500;
+    let length = pageYOffset;
+    let step = length * 1000 / ms / 60;
+    let inv = setInterval(() => {
+        scroll(pageXOffset, pageYOffset - step);
+    }, 16);
+    setTimeout(() => {
+        clearInterval(inv);
+    },ms);
+}
+
 /**
  * Hide article content and show article list.
  */
 function showIndex() {
-    slideDownHide($('#index-article-view'));
-    setTimeout(() => slideUpShow($('#index-article-list')), 500);
+    ScrollTop();
+    slideDownHide($('.main'));
+    setTimeout(() => {
+        $('#index-article-view').classList.add('hidden');
+        $('#index-article-list').classList.remove('hidden');
+        slideUpShow($('.main'));
+    }, 500);
     let header = $('#view-header');
-    slideDownShow(header);
-    header.setAttribute('id', 'index-header');
+    if (header) {
+        slideDownShow(header);
+        header.setAttribute('id', 'index-header');
+    }
 }
 
 function showView() {
-    slideDownHide($('#index-article-list'));
-    setTimeout(() => slideUpShow($('#index-article-view')), 500);
+    ScrollTop();
+    slideDownHide($('.main'));
+    setTimeout(() => {
+        $('#index-article-view').classList.remove('hidden');
+        $('#index-article-list').classList.add('hidden');
+        slideUpShow($('.main'));
+    }, 500);
     let header = $('#index-header');
     slideUpHide(header);
-    setTimeout(() => header.classList.remove('hidden'), 500);
-    header.setAttribute('id', 'view-header');
+    setTimeout(() => {
+        header.classList.remove('hidden');
+        header.setAttribute('id', 'view-header');
+    }, 500);
 }
 
 function bidingArticleEntry() {
