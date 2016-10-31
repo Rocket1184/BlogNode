@@ -150,7 +150,7 @@ Config.get(path.resolve(root, 'config.json'), opt => {
         ViewPageBuilder.init(data.toString());
     });
 
-    fs.readFile(path.join(root, '/page/index.html'), (err, data) => {
+    fs.readFile(opt.resourcePath['indexPage'], (err, data) => {
         IndexBuilder.init(data.toString());
     });
 
