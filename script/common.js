@@ -35,7 +35,7 @@ class Article {
         ].join('');
         this.node.getElementsByClassName('title')[0].onclick = e => {
             e.preventDefault();
-            showView();
+            hideIndexHeaderList();
             loadArticleContent(this.fileName);
         };
     }
@@ -79,15 +79,15 @@ function ScrollTop(ms) {
 }
 
 /**
- * Hide article content and show article list.
+ * Hide article content and show index header.
  */
-function showIndex() {
+function refreshIndex() {
     scroll(0, 0);
     slideDownHide($('.main'));
     setTimeout(() => {
         $('#index-article-view').classList.add('hidden');
         $('#index-article-list').classList.remove('hidden');
-        slideUpShow($('.main'));
+        refreshArticleList(() => slideUpShow($('.main')));
     }, 500);
     let header = $('#view-header');
     if (header) {
@@ -96,7 +96,10 @@ function showIndex() {
     }
 }
 
-function showView() {
+/**
+ * hide index header and article list
+ */
+function hideIndexHeaderList() {
     slideDownHide($('.main'));
     let header = $('#index-header');
     slideUpHide(header);
@@ -104,12 +107,14 @@ function showView() {
         scroll(0, 0);
         $('#index-article-view').classList.remove('hidden');
         $('#index-article-list').classList.add('hidden');
-        slideUpShow($('.main'));
         header.classList.remove('hidden');
         header.setAttribute('id', 'view-header');
     }, 500);
 }
 
+/**
+ * biding pjax request to index article entry
+ */
 function bidingArticleEntry() {
     let ul = document.querySelectorAll('li.stack>a');
     [].forEach.call(ul, li => {
@@ -117,13 +122,18 @@ function bidingArticleEntry() {
         let fileName = /\/([^\/]+?)$/.exec(herf)[1];
         li.onclick = e => {
             e.preventDefault();
-            showView();
-            loadArticleContent(fileName);
+            hideIndexHeaderList();
+            loadArticleContent(fileName, false, () => {
+                setTimeout(() => slideUpShow($('.main')), 500);
+            });
         };
     });
 }
 
-function refreshArticleList() {
+/**
+ * delete all index article entries and reload from server
+ */
+function refreshArticleList(callback) {
     let ul = document.querySelector('#index-article-list').getElementsByTagName('ul')[0];
 
     function success(response) {
@@ -146,7 +156,8 @@ function refreshArticleList() {
     function fail() {
         let newLine = document.createElement('li');
         newLine.innerText = `List Load Faild :-(`;
-        ul.appendChild(newLine);
+        newLine.classList.add('stack');
+        ul.innerHTML = newLine.outerHTML;
     }
 
     let request = new XMLHttpRequest(); // New XMLHttpRequest Object
@@ -156,11 +167,12 @@ function refreshArticleList() {
             // response result:
             if (request.status === 200) {
                 // succeed: update article
-                return success(request.response);
+                success(request.response);
             } else {
                 // failed: show error code
-                return fail();
+                fail();
             }
+            callback && callback();
         }
     };
 
@@ -169,7 +181,14 @@ function refreshArticleList() {
     request.send();
 }
 
-function loadArticleContent(fileName, fromState) {
+/**
+ * load article content by article fileName
+ * 
+ * @param {any} fileName
+ * @param {any} fromState is from window 'popstate' event
+ * @param {any} callback callback(request.status) after xhr request finished
+ */
+function loadArticleContent(fileName, fromState, callback) {
     function success(response) {
         if (!fromState) {
             history.pushState({
@@ -196,10 +215,12 @@ function loadArticleContent(fileName, fromState) {
     request.onreadystatechange = () => {
         if (request.readyState === 4) {
             if (request.status === 200) {
-                return success(request.response);
+                success(request.response);
             } else {
-                return fail(request.response);
+                fail(request.response);
             }
+            callback && callback(request.status);
+            return;
         }
     };
 
@@ -285,8 +306,7 @@ document.addEventListener('readystatechange', () => {
             e.preventDefault();
             btnIndex.blur();
             history.pushState({ originTitle: '', type: 'index', originPathName: window.location.pathname }, '', '/');
-            showIndex();
-            refreshArticleList();
+            refreshIndex();
         };
     }
 });
@@ -296,17 +316,15 @@ window.addEventListener('popstate', e => {
         let pn = window.location.pathname;
         let archiveRegex = /\/archive\/(.+)/;
         if (pn === '/') {
-            showIndex();
-            refreshArticleList();
+            refreshIndex();
         } else if (archiveRegex.test(pn)) {
-            showView();
+            hideIndexHeaderList();
             loadArticleContent(archiveRegex.exec(pn)[1]);
         }
     } else if (e.state.type === 'index') {
-        showIndex();
-        refreshArticleList();
+        refreshIndex();
     } else if (e.state.type === 'archive') {
-        showView();
+        hideIndexHeaderList();
         loadArticleContent(e.state.originTitle, true);
     }
 });
