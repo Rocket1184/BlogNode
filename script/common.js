@@ -66,6 +66,11 @@ class SideListItem {
     }
 }
 
+/**
+ * scroll to top smoothly
+ * 
+ * @param {any} ms time/ms, empty for 500ms
+ */
 function ScrollTop(ms) {
     ms = ms || 500;
     let length = pageYOffset;
@@ -246,7 +251,7 @@ function loadMusicRecord() {
     }
 
     function fail() {
-        ul.innerText = 'Music Record Load Faild :-(';
+        ul.innerHTML = '<li class="side-li"><a>Music Record Load Faild :-(</a></liz>';
     }
 
     let request = new XMLHttpRequest();
