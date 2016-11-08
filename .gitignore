@@ -18,3 +18,4 @@ nohup.out
 /static/*
 /*.html
 config.json
+.well-known/*
