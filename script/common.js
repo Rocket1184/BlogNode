@@ -330,6 +330,8 @@ window.addEventListener('popstate', e => {
         refreshIndex();
     } else if (e.state.type === 'archive') {
         hideIndexHeaderList();
-        loadArticleContent(e.state.originTitle, true);
+        loadArticleContent(e.state.originTitle, false, () => {
+            setTimeout(() => slideUpShow($('.main')), 500);
+        });
     }
 });
