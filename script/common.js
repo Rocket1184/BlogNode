@@ -329,7 +329,6 @@ window.addEventListener('popstate', e => {
     } else if (e.state.type === 'index') {
         refreshIndex();
     } else if (e.state.type === 'archive') {
-        console.log(e);
         hideIndexHeaderList();
         loadArticleContent(e.state.originTitle, false, () => {
             setTimeout(() => slideUpShow($('.main')), 500);
