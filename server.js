@@ -74,7 +74,7 @@ function ServerHandler(request, response) {
                             });
                         } else {
                             // render view page serverSide
-                            ViewPageBuilder.build(path.join(root, pathName), res => {
+                            ViewPageBuilder.build(fileName, res => {
                                 response.writeHead(200, HeaderBuilder.build('html', { stats: stats, length: false, cache: false }));
                                 response.end(res);
                                 logger.log(`[Router] ${request.method} 200 ${pathName} (Server Page)`);
