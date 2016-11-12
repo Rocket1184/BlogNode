@@ -205,9 +205,9 @@ function loadDisqusComment(id, title) {
     DISQUS.reset({
         reload: true,
         config: function() {
-            this.page.identifier = id;
-            this.page.title = title;
             this.page.url = getLink();
+            this.page.title = title;
+            this.page.identifier = id;
         }
     });
 }
