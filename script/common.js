@@ -8,6 +8,12 @@ function $s(selector) {
     return document.querySelectorAll(selector);
 }
 
+function getLink() {
+    let port = '';
+    if (location.port !== '') port = ':' + location.port;
+    return location.protocol + '//' + location.hostname + port + location.pathname;
+}
+
 /**
  * Index Article
  * 
@@ -90,9 +96,11 @@ function refreshIndex() {
     scroll(0, 0);
     slideDownHide($('.main'));
     setTimeout(() => {
+        $('#disqus_thread').classList.add('hidden');
         $('#index-article-view').classList.add('hidden');
         $('#index-article-list').classList.remove('hidden');
         refreshArticleList(() => slideUpShow($('.main')));
+        loadDisqusComment('Rocka\'s Blog', 'Rocka\'s Blog Index');
     }, 500);
     let header = $('#view-header');
     if (header) {
@@ -112,6 +120,7 @@ function hideIndexHeaderList() {
         scroll(0, 0);
         $('#index-article-view').classList.remove('hidden');
         $('#index-article-list').classList.add('hidden');
+        $('#disqus_thread').classList.remove('hidden');
         header.classList.remove('hidden');
         header.setAttribute('id', 'view-header');
     }, 500);
@@ -187,6 +196,22 @@ function refreshArticleList(callback) {
 }
 
 /**
+ * (re)load Disqus comments
+ * 
+ * @param {any} id page identifier
+ * @param {any} title page title
+ */
+function loadDisqusComment(id, title) {
+    DISQUS.reset({
+        reload: true,
+        config: function() {
+            this.page.identifier = id;
+            this.page.url = getLink();
+        }
+    });
+}
+
+/**
  * load article content by article fileName
  * 
  * @param {any} fileName
@@ -208,6 +233,7 @@ function loadArticleContent(fileName, fromState, callback) {
         let data = JSON.parse(response);
         document.getElementById('index-article-title').innerText = data.title;
         document.getElementById('index-article-content').innerHTML = data.content;
+        loadDisqusComment(fileName, data.title);
     }
 
     function fail(response) {
