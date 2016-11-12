@@ -6,7 +6,7 @@
     <title>Rocka's Blog</title>
     <link rel="stylesheet" href="../style/main.css" type="text/css">
     <link rel="stylesheet" href="../style/mobile.css" type="text/css">
-	<link rel="stylesheet" href="../style/animation.css" type="text/css">
+    <link rel="stylesheet" href="../style/animation.css" type="text/css">
     <script src="../script/common.js"></script>
     <script src="../script/index.js"></script>
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -48,6 +48,22 @@
                 <h1 id="index-article-title" class="title">${article.title}</h1>
                 <article id="index-article-content">${article.content}</article>
             </div>
+
+            <div id="disqus_thread" class="stack hidden"></div>
+            <script>
+                let disqus_config = function() {
+                    this.page.url = getLink();
+                    this.page.title = 'Rocka\'s Blog';
+                    this.page.identifier = 'Rocka\'s Blog Index';
+                };
+                (() => {
+                    let d = document;
+                    let s = d.createElement('script');
+                    s.src = '//rocka-blog.disqus.com/embed.js';
+                    s.setAttribute('data-timestamp', +new Date());
+                    (d.head || d.body).appendChild(s);
+                })();
+            </script>
         </div>
 
         <div class="side">
