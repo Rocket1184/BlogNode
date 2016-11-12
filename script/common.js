@@ -206,6 +206,7 @@ function loadDisqusComment(id, title) {
         reload: true,
         config: function() {
             this.page.identifier = id;
+            this.page.title = title;
             this.page.url = getLink();
         }
     });
