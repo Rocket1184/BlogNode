@@ -17,7 +17,7 @@ const ViewPageBuilder = require('./lib/ViewPageBuilder');
 const RangeFileReader = require('./lib/RangeFileReader');
 
 const root = path.resolve('.');
-const logger = new Logger.Logger();
+const logger = new Logger.Logger('', 'zh-CN', 'Asia/Shanghai');
 
 let regexs = {
     extName: /\.([\w\d]+?)$/
@@ -137,7 +137,7 @@ function RedirectHandler(request, response) {
 }
 
 Config.get(path.resolve(root, 'config.json'), (err, opt) => {
-    if(err) {
+    if (err) {
         logger.log('Config file parse failed, process terminated.\n', err);
         process.exit(1);
     }
