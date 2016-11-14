@@ -5,7 +5,7 @@ function $(selector) {
 }
 
 function $s(selector) {
-    return document.querySelectorAll(selector);
+    return [...document.querySelectorAll(selector)];
 }
 
 function getLink() {
@@ -202,6 +202,7 @@ function refreshArticleList(callback) {
  * @param {any} title page title
  */
 function loadDisqusComment(id, title) {
+    if(typeof DISQUS === 'undefined') return console.warn('Cannot load Disqus.');
     DISQUS.reset({
         reload: true,
         config: function() {
