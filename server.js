@@ -17,7 +17,7 @@ const ViewPageBuilder = require('./lib/ViewPageBuilder');
 const RangeFileReader = require('./lib/RangeFileReader');
 
 const root = path.resolve('.');
-const logger = new Logger.Logger('', 'zh-CN', 'Asia/Shanghai');
+const logger = new Logger('', 'zh-CN', 'Asia/Shanghai');
 
 let regexs = {
     extName: /\.([\w\d]+?)$/
