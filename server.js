@@ -119,7 +119,7 @@ function ServerHandler(request, response) {
                     // file not found
                     response.writeHead(200, HeaderBuilder.build('html', { stats: stats }));
                     fs.createReadStream('./page/current404.html').pipe(response);
-                    logger.log(`[Router] ${request.method} 404 ${pathName}`);
+                    logger.log(`[Router] ${request.method} 404 ${pathName} ClientIP: ${request.socket.remoteAddress}`);
                 }
             });
         }
