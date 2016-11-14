@@ -17,7 +17,7 @@ const ViewPageBuilder = require('./lib/ViewPageBuilder');
 const RangeFileReader = require('./lib/RangeFileReader');
 
 const root = path.resolve('.');
-const logger = new Logger.Logger();
+const logger = new Logger.Logger('', 'zh-CN', 'Asia/Shanghai');
 
 let regexs = {
     extName: /\.([\w\d]+?)$/
@@ -136,7 +136,11 @@ function RedirectHandler(request, response) {
     response.end();
 }
 
-Config.get(path.resolve(root, 'config.json'), opt => {
+Config.get(path.resolve(root, 'config.json'), (err, opt) => {
+    if (err) {
+        logger.log('Config file parse failed, process terminated.\n', err);
+        process.exit(1);
+    }
     /**init Current Version 404 page. */
     fs.readFile(opt.resourcePath['404Page'], (err, data) => {
         let ver = process.version;
