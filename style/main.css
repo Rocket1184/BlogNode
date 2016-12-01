@@ -143,6 +143,10 @@ li.nav>a:hover {
     color: #009688;
 }
 
+#index-article-title {
+    margin: 0.5rem 0 1rem 0;
+}
+
 .stack>a.title:hover {
     color: darkorange;
 }
