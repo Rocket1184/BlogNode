@@ -1,7 +1,7 @@
 /*   global adjustment   */
 
 * {
-    font-family: 'Noto Sans CJK SC', '文泉驿微米黑', 'Microsoft YaHei UI', '微软雅黑', sans-serif;
+    font-family: '文泉驿微米黑', 'Noto Sans CJK SC', 'Microsoft YaHei UI', '微软雅黑', sans-serif;
     font-size: 16px;
     padding: 0;
     margin: 0;
@@ -141,6 +141,10 @@ li.nav>a:hover {
 .stack>.title {
     font-size: 1.5rem;
     color: #009688;
+}
+
+#index-article-title {
+    margin: 0.5rem 0 1rem 0;
 }
 
 .stack>a.title:hover {
