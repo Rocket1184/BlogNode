@@ -102,7 +102,7 @@ OK
 OK
 ```
 
-到这里就完成一半了，可以用 `iwconfig` 看一下网卡信息。然后输入 `quit` 退出 `wpa_cli` ，之后还要手动启动 DHCP 获取 IP 地址：
+到这里就完成一半了，输入 `quit` 退出 `wpa_cli` 。可以先用 `iwconfig` 看一下网卡信息，之后还要手动启动 DHCP 获取 IP 地址：
 
 ```shell
 sudo dhclient wlan0
@@ -129,7 +129,7 @@ network={
 ```shell
 #!/bin/sh
 sudo wpa_supplicant -B -D nl80211 -i wlan0 -c /home/alarm/wlan/net.conf
-sudo dhclient wlan0
+sudo dhcpcd wlan0
 exit 0
 ```
 
@@ -147,7 +147,13 @@ WiFi 算是连接好了，如果断开了怎么重新连接？如果要连 WiFi 
 
 所以还是琢磨着搞一个开机启动脚本。然而 Arch Linux 似乎没有 `/etc/rc.local` 这个东西，幸好我在[这里](https://bbs.archlinux.org/viewtopic.php?id=148170)搜到了可以利用系统服务来开机启动脚本的教程，魔改一下还是可以用的。
 
-首先创建文件 `/usr/lib/systemd/system/rc.local.service` ：
+首先创建服务文件：
+
+```shell
+sudo touch /usr/lib/systemd/system/rc.local.service
+```
+
+写入以下内容：
 
 ```ini
 [Unit]
@@ -166,7 +172,7 @@ WantedBy=multi-user.target
 
  这里参考了上面的教程，以及这个 [systemd.service](https://www.freedesktop.org/software/systemd/man/systemd.service.html) 的文件语法。
 
-如果在 `[Unit]` 块中显式声明 `After=xxx` ，这个服务就会在系统初始化到某一阶段后才执行。比如设置 `After=network.target` 会使得脚本在系统有网络后才执行。这里我们要的是系统启动自动联网，当然要去掉了。不过对于没有显式声明 `After=` 、`Require=` 并且 `DefaultDependencies=` 没有设置为 `false` 的服务项，系统会自动添加依赖 `After=sysint.target` ，来保证脚本运行时系统已初始化完毕。
+如果在 `[Unit]` 块中显式声明 `After=xxx` ，这个服务就会在系统初始化到某一阶段后才执行。比如设置 `After=network.target` 会使得脚本在系统有网络后才执行。这里我们要的是系统启动自动联网，当然要去掉了。不过对于没有显式声明 `After` 、`Require` 并且 `DefaultDependencies` 没有设置为 `false` 的服务项，系统会自动添加依赖 `After=sysint.target` ，来保证脚本运行时系统已初始化完毕。
 
 然后就是新建文件 `/etc/rc.local` ：
 
@@ -192,7 +198,7 @@ sudo systemctl enable rc.local.service
 作为一个物联网设置，怎么能没有蓝牙呢。不过 Arch Linux ARM 没有包含 RPi3B 的蓝牙驱动，需要自行从 AUR 下载源码编译；而从 AUR 下载源码的工具 `yaourt` 需要从 Git 克隆源码进行编译；但编译 `yaourt` 时又依赖一些软件包，所以第一步应该先安装这些：
 
 ```shell
-sudo pacman -S packer 这里还需要补充
+sudo pacman -S pkg-config fakeroot patch
 ```
 
 然后克隆源码并编译安装 `yaourt` ：[参考链接点我](https://archlinux.fr/yaourt-en)
