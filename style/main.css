@@ -217,6 +217,10 @@ li.nav>a:hover {
 
 /* styles in article */
 
+article {
+    line-height: 175%;
+}
+
 article>* {
     margin-bottom: 16px;
 }
@@ -247,7 +251,8 @@ article h6 {
 
 article h1::after,
 article h2::after {
-    font-size: 0px;
+    margin-top: 0.5rem;
+    font-size: 0;
     color: lightgrey;
     content: "-";
     display: block;
