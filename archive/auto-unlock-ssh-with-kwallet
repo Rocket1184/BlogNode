@@ -1,0 +1,70 @@
+Title: 在 KDE 中使用 KWallet 自动解锁 SSH 秘钥
+Date: Thu Mar 16 2017 00:21:33 GMT+0800 (CST)
+Tag: Linux
+==========
+一开始用Ubuntu的时候，创建过一个ssh秘钥，然后unity很贴心的帮忙勾选上了“每次登录时自动解锁此秘钥”，惯得我差点把密码给忘了。前一段时间把所有Git仓库的远程URL都换成了SSH，感觉好像快一点，但每次都输入密码很是烦人。虽然WebStorm可以在同步更改时选择保存密码，不过关掉以后还得输入。那就随便折腾一下这个KWallet吧。
+
+大部分的内容都参考自 Arch Wiki：
+
+  1. [KDE Wallet](https://wiki.archlinux.org/index.php/KDE_Wallet#Using_the_KDE_Wallet_to_store_ssh_keys)
+
+  2. [SSH Keys](https://wiki.archlinux.org/index.php/SSH_keys#ssh-agent)
+
+  3. [systemd/user](https://wiki.archlinux.org/index.php/Systemd/User)
+
+## 1 安装必要的软件包
+
+首先要安装的肯定时是`openssh`。然后还要一个输密码的 GUI ，即`ksshaskpass`：
+
+```bash
+sudo pacman -S openssh ksshaskpass
+```
+
+## 2 设置ssh-agent服务
+
+新建文件 `~/.config/systemd/user/ssh-agent.service`
+
+```ini
+[Unit]
+Description=SSH key agent
+
+[Service]
+Type=forking
+Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
+ExecStart=/usr/bin/ssh-agent -a $SSH_AUTH_SOCK
+
+[Install]
+WantedBy=default.target
+```
+
+然后启用这个服务
+
+```bash
+systemctl --user enable ssh-agent.service
+```
+
+## 3 用户登录时自动 ssh-add
+
+新建文件`~/.config/autostart-scripts/ssh-add.sh`
+
+```bash
+#!/bin/sh
+ssh-add < /dev/null
+```
+
+然后添加执行权限。如果要添加多个秘钥，可以给ssh-add追加参数指定秘钥文件。默认加入的是`~/.ssh/id_rsa`
+
+## 4 设置环境变量
+
+wiki上说要放到`.bash_profile`里面，不过我直接扔到了`.xprofile`
+
+```bash
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+export SSH_ASKPASS="/usr/bin/ksshaskpass"
+```
+
+## 5 完工
+
+搞好这些之后，注销重新登录，就会看见`ksshaskpass`在弹窗要求你输入秘钥了。允许保存密码之后，注销或重启都不需要再输入密码。 不过前提是KWallet需要[登录时自动解锁](https://wiki.archlinux.org/index.php/KDE_Wallet#Unlock_KDE_Wallet_automatically_on_login)。这个配置起来比较简单，这里就不复制粘贴了。
+
+![Ksshaskpass](https://images2015.cnblogs.com/blog/877509/201703/877509-20170316005016807-1925666694.png)
