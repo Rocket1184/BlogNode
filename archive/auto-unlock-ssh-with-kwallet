@@ -1,8 +1,8 @@
-Title: 在 KDE 中使用 KWallet 自动解锁 SSH 秘钥
+Title: 在 KDE 中使用 KWallet 自动解锁 SSH 密钥
 Date: Thu Mar 16 2017 00:21:33 GMT+0800 (CST)
 Tag: Linux
 ==========
-一开始用Ubuntu的时候，创建过一个ssh秘钥，然后unity很贴心的帮忙勾选上了“每次登录时自动解锁此秘钥”，惯得我差点把密码给忘了。前一段时间把所有Git仓库的远程URL都换成了SSH，感觉好像快一点，但每次都输入密码很是烦人。虽然WebStorm可以在同步更改时选择保存密码，不过关掉以后还得输入。那就随便折腾一下这个KWallet吧。
+一开始用Ubuntu的时候，创建过一个ssh密钥，然后unity很贴心的帮忙勾选上了“每次登录时自动解锁此密钥”，惯得我差点把密码给忘了。前一段时间把所有Git仓库的远程URL都换成了SSH，感觉好像快一点，但每次都输入密码很是烦人。虽然WebStorm可以在同步更改时选择保存密码，不过关掉以后还得输入。那就随便折腾一下这个KWallet吧。
 
 大部分的内容都参考自 Arch Wiki：
 
@@ -52,7 +52,7 @@ systemctl --user enable ssh-agent.service
 ssh-add < /dev/null
 ```
 
-然后添加执行权限。如果要添加多个秘钥，可以给ssh-add追加参数指定秘钥文件。默认加入的是`~/.ssh/id_rsa`
+然后添加执行权限。如果要添加多个密钥，可以给ssh-add追加参数指定密钥文件。默认加入的是`~/.ssh/id_rsa`
 
 ## 4 设置环境变量
 
@@ -65,6 +65,6 @@ export SSH_ASKPASS="/usr/bin/ksshaskpass"
 
 ## 5 完工
 
-搞好这些之后，注销重新登录，就会看见`ksshaskpass`在弹窗要求你输入秘钥了。允许保存密码之后，注销或重启都不需要再输入密码。 不过前提是KWallet需要[登录时自动解锁](https://wiki.archlinux.org/index.php/KDE_Wallet#Unlock_KDE_Wallet_automatically_on_login)。这个配置起来比较简单，这里就不复制粘贴了。
+搞好这些之后，注销重新登录，就会看见`ksshaskpass`在弹窗要求你输入密钥了。允许保存密码之后，注销或重启都不需要再输入密码。 不过前提是KWallet需要[登录时自动解锁](https://wiki.archlinux.org/index.php/KDE_Wallet#Unlock_KDE_Wallet_automatically_on_login)。这个配置起来比较简单，这里就不复制粘贴了。
 
 ![Ksshaskpass](https://images2015.cnblogs.com/blog/877509/201703/877509-20170316005016807-1925666694.png)
