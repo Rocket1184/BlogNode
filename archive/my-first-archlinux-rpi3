@@ -40,7 +40,7 @@ alarm  ALL=NOPASSWD: ALL
 
 切回 `alarm`，然后可以随便装个 `screenfetch`，截图留念一下了：
 
-![这里需要图片]()
+![screenfetch](https://images2015.cnblogs.com/blog/877509/201704/877509-20170425164601647-7619907.png)
 
 ## 4 用命令行连接 WiFi 网络
 
@@ -153,7 +153,13 @@ WiFi 算是连接好了，如果断开了怎么重新连接？如果要连 WiFi 
 
 所以还是琢磨着搞一个开机启动脚本。然而 Arch Linux 似乎没有 `/etc/rc.local` 这个东西，幸好我在[这里](https://bbs.archlinux.org/viewtopic.php?id=148170)搜到了可以利用系统服务来开机启动脚本的教程，魔改一下还是可以用的。
 
-首先创建文件 `/usr/lib/systemd/system/rc.local.service` ：
+首先创建文件： 
+
+```shell
+sudo touch /usr/lib/systemd/system/rc.local.service
+```
+
+内容是这样的：
 
 ```ini
 [Unit]
@@ -198,7 +204,7 @@ sudo systemctl enable rc.local.service
 作为一个物联网设置，怎么能没有蓝牙呢。不过 Arch Linux ARM 没有包含 RPi3B 的蓝牙驱动，需要自行从 AUR 下载源码编译；而从 AUR 下载源码的工具 `yaourt` 需要从 Git 克隆源码进行编译；但编译 `yaourt` 时又依赖一些软件包，所以第一步应该先安装这些：
 
 ```shell
-sudo pacman -S packer 这里还需要补充
+sudo pacman -S packer pkg-config fakeroot patch
 ```
 
 然后克隆源码并编译安装 `yaourt` ：[参考链接点我](https://archlinux.fr/yaourt-en)
