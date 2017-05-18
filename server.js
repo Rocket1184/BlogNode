@@ -47,7 +47,15 @@ function ServerHandler(request, response) {
                     response.writeHead(200, HeaderBuilder.build('json'));
                     NeteaseApi.get(data => response.end(data));
                     break;
-                default:
+				case '/api/ua':
+					response.writeHead(200, HeaderBuilder.build('txt'));
+					response.end(request.headers['user-agent']);
+					break;
+				case '/api/ip':
+					response.writeHead(200, HeaderBuilder.build('txt'));
+					response.end(request.headers['x-forwarded-for']);
+					break;
+				default:
                     response.writeHead(404, HeaderBuilder.build('json'));
                     response.end('{"error": "Invalid Api path."}');
                     break;
