@@ -262,7 +262,6 @@ article h2::after {
 
 quote {
     display: block;
-    white-space: pre;
     background-color: #EEEEEE;
     border-left: 8px solid lightgrey;
     padding: 8px;
