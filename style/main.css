@@ -280,6 +280,8 @@ quote {
 
 .code-block {
     white-space: pre;
+    line-height: 130%;
+	font-size: 14px;
     display: block;
     padding: 12px;
     max-width: 100%;
