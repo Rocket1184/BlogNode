@@ -14,7 +14,7 @@ Tag: Android, Kotlin
 
 ```gradle
 buildscript {
-	ext.kotlin_version = '1.1.2-3'
+    ext.kotlin_version = '1.1.2-3'
     ext.android_plugin_version = '2.3.0'
     { ... }
 }
