@@ -31,13 +31,13 @@ pacman -S xf86-input-libinput mesa xf86-video-intel vulkan-intel
 ```bash
 pacman -S grub efibootmgr
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub
-​````
+```
 
 如果要与 Windows 共存的话，还需要安装 `os-prober` ，以便 GRUB 自动添加 Windows Boot Mgr 到引导。
 
 然后生成 GRUB 配置文件：
 
-​```bash
+```bash
 grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
@@ -108,17 +108,23 @@ vim /etc/locale.gen
 locale-gen 
 echo LANG=en_US-UTF-8 > /etc/locale.conf
 tzselect
+
 # 硬件时钟同步
 hwclock --systohc --utc
+
 # root 密码
 passwd
+
 # 添加用户
 useradd -m -G wheel,users -s /usr/bin/fish rocka
 passwd rocka
+
 # 把自己加入 sudoers
 EDITOR=vim visudo
+
 # 主机名
 echo  quad > /etc/hostname
+
 # 启动各种服务
 systemctl enable sddm
 systemctl enable NetworkManager
