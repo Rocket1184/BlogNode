@@ -147,8 +147,8 @@ Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch
 ```bash
 sudo pacman -Syyu archlinuxcn-keyring
 sudo pacman -S yaourt
-yaourt -S applets-active-window-control \
-          applets-redshift-control \
+yaourt -S plasma5-applets-applets-active-window-control \
+          plasma5-applets-applets-redshift-control \
           noto-fonts \
           noto-fonts-cjk \
           noto-fonts-emoji \
