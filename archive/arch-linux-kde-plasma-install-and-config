@@ -106,7 +106,7 @@ EndSection
 # 语言和时区
 vim /etc/locale.gen 
 locale-gen 
-echo LANG=en_US-UTF-8 > /etc/locale.conf
+echo LANG=en_US.UTF-8 > /etc/locale.conf
 tzselect
 
 # 硬件时钟同步
