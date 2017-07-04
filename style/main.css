@@ -1,7 +1,7 @@
 /*   global adjustment   */
 
 * {
-    font-family: 'Noto Sans CJK SC', '文泉驿微米黑', 'Microsoft YaHei UI', '微软雅黑', sans-serif;
+    font-family: 'Noto Sans CJK SC', 'Noto Sans', 'Microsoft YaHei UI', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
     font-size: 16px;
     padding: 0;
     margin: 0;
@@ -154,6 +154,7 @@ li.nav>a:hover {
 .stack>.content {
     font-size: 1rem;
     font-family: 'Monaco', 'Ubuntu Mono', 'Consolas', monospace;
+    margin-top: 0.5em;
 }
 
 .stack>.content::after {
