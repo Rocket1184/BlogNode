@@ -6,7 +6,9 @@ Tag: Linux
 
 首先是备份，直接把 `/home` 打成 tar 包复制到固态最后面一块刚划出来的分区里面备用。然后进入 LiveCD ，把 f2fs 分区干掉，换成 ext4 。这里又想吐槽一次了，f2fs 居然不支持分区移动和收缩，要拓展分区只能用 `resize.f2fs`，`parted` 也是拿他没什么办法。
 
------------ `arch-chroot` 分割线 ----------
+<p align="center">
+----------- arch-chroot 分割线 ----------
+</p>
 
 先安装基本的软件包，当然少不了 fish shell 了！
 
