@@ -154,11 +154,11 @@ class BindingActivity : ThemedActivity() {
 
 然后我们来测试了。初始是这样的：
 
-![Init](https://images2015.cnblogs.com/blog/877509/201705/877509-20170518212841478-959859850.png)
+![Init](https://rocka.me/static/img/877509-20170518212841478-959859850.png)
 
 然后我们修改一些数据， 并点击 ”Show Track“ ：
 
-![changed](https://images2015.cnblogs.com/blog/877509/201705/877509-20170518212852869-1050085326.png)
+![changed](https://rocka.me/static/img/877509-20170518212852869-1050085326.png)
 
 很完美对不对？而且代码量比起 ~~辣鸡~~ Java 来说少多了，语法太甜了，我喜欢哈哈哈哈哈哈哈。
 

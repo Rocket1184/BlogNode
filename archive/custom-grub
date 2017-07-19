@@ -8,7 +8,7 @@ Tags: Linux
 
 ## 1 安装主题
 
-![Aurora Punguinis](https://rocka.me/static/Aurora-Pnguinis.jpg)
+![Aurora Punguinis](https://rocka.me/static/img/877509-20161021234224326-1991054631.png)
 
 一开始找到了 [Aurora Pnguinis](https://www.gnome-look.org/p/1009533/) 这个主题，比较合我的口味。然后是常规的下载安装，不过步骤还是写一下吧：
 
@@ -67,7 +67,7 @@ GRUB_GFXPAYLOAD_LINUX=keep
 虽然默认图片很好看，但还是有点太艳丽了。我需要一个低调一点的。
 翻出一张还凑合的壁纸，打开`GIMP`手动磨砂玻璃：
 
-![GRUBbkg](https://images2015.cnblogs.com/blog/877509/201610/877509-20161021225815623-1826489478.png)
+![GRUBbkg](https://rocka.me/static/img/877509-20161021225815623-1826489478.png)
 
 然后复制到主题目录，给权限755：
 
@@ -137,4 +137,4 @@ sudo update-grub
 
 ## 3 最终效果
 
-![Final](https://images2015.cnblogs.com/blog/877509/201610/877509-20161021232656357-295867820.jpg)
+![Final](https://rocka.me/static/img/877509-20161021232656357-295867820.jpg)
