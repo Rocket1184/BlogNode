@@ -1,5 +1,9 @@
 /*   global adjustment   */
 
+html {
+    overflow-y: scroll;
+}
+
 * {
     font-family: 'Noto Sans CJK SC', 'Noto Sans', 'Microsoft YaHei UI', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
     font-size: 16px;
@@ -100,8 +104,9 @@ li.nav>a:hover {
     height: 22rem;
     overflow: hidden;
     position: relative;
-    background-image: url('https://rocka.me/static/NASABahamas.jpg');
+    background-image: url('/static/NASABahamas.jpg');
     background-size: cover;
+    background-attachment: fixed;
 }
 
 #index-header-text {
