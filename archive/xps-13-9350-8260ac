@@ -1,0 +1,60 @@
+Title: XPS 13 9350 更换 Intel 8260 AC 无线网卡
+Date: Tue Nov 28 2017 23:39:13 GMT+0800 (CST)
+Tag: 
+==========
+
+Dell XPS 开发者版与普通版最大的区别大概就是无线网卡了。开发者版是 Linux 友好的 Intel 网卡，而其他的版本一般是 Dell 自己的网卡，在我看来就是 Broadcom 网卡的马甲。据说 Broadcom 的网卡对黑苹果很友好，然而我又不用 ... 但最近在更新 `linux-lts` 内核的时候，却出现了很大的问题。
+
+在上个星期更新内核到 `linux-lts-4.9.62-1` 时，出现了网卡不可用的情况。给出的报错信息为
+
+```
+# journalctl
+11月 20 14:43:34 quad kernel: brcmfmac: brcmf_p2p_create_p2pdev: set p2p_disc error
+11月 20 14:43:34 quad kernel: brcmfmac: brcmf_cfg80211_add_iface: add iface p2p-dev-wlp58s0 type 10 failed: err=-16
+
+# dmesg
+[    4.061743] usbcore: registered new interface driver brcmfmac
+[    4.061803] brcmfmac 0000:3a:00.0: enabling device (0000 -> 0002)
+[    4.184308] brcmfmac 0000:3a:00.0: Direct firmware load for brcm/brcmfmac4350-pcie.txt failed with error -2
+[    4.645165] brcmfmac: brcmf_c_preinit_dcmds: Firmware version = wl0: Oct 22 2015 06:16:26 version 7.35.180.119 (r594535) FWID 01-e791c176
+[    4.660415] brcmfmac: brcmf_cfg80211_reg_notifier: not a ISO3166 code (0x30 0x30)
+[    4.681113] brcmfmac 0000:3a:00.0 wlp58s0: renamed from wlan0
+[    6.054543] brcmfmac: brcmf_p2p_create_p2pdev: set p2p_disc error
+[    6.054549] brcmfmac: brcmf_cfg80211_add_iface: add iface p2p-dev-wlp58s0 type 10 failed: err=-16
+```
+
+Google 了好半天，没有发现什么有用的信息，于是滚回 mainline 内核看看。结果一切正常 ...
+
+但我就是要用 LTS 内核，这个 Broadcom 网卡已经让我不爽很久了！于是某宝买了个网卡，就有了下面的故事。
+
+## 拆机
+
+根据 [这个教程](https://www.ifixit.com/Guide/Dell+XPS+13+9350+Wireless+Card+Replacement/89136) ，拆掉后盖的 8 个螺丝，掀开后盖，就可以直接换网卡了。不过后盖的螺丝是 `*` 型的，最好提前准备一下。
+
+![拆机用的螺丝刀](https://rocka.me/static/img/IMG_20171122_212227.jpg)
+
+还有一个教程里面没提到的螺丝，在 D 面的小盖板后面，一定不要忘记这个。
+
+![小盖板里的螺丝](https://rocka.me/static/img/IMG_20171122_202111.jpg)
+
+螺丝拆掉后，按照教程，就可以 “用双手把后盖提起” 。但实际上并没有那么简单，螺丝很短，大概只有 3 毫米左右，靠这个螺丝是绝对不足以固定后盖的，肯定要有卡扣了。然而这个卡扣可是异常难拆，如果有塑料撬片的话那很好，不过我没有提前准备这个东西 ... 于是用了一个塑料的小风扇扇叶代替。可能是我的技术不够好把，扇叶被我磨成了这幅样子 ：
+
+![被磨损的扇叶](https://rocka.me/static/img/IMG_20171122_214710.jpg)
+
+还是建议在两侧 USB 接口的地方下手撬开，别的地方实在是不好动手。
+
+后盖掀开，就可以直接把网卡卸下来。还是看一下内部结构，飞线/胶布不少，跟 MacBook 还是差了一大截。
+
+![掀开后盖的样子](https://rocka.me/static/img/IMG_20171122_204736.jpg)
+
+然后没什么好说的，换上新的就行了。因为 XPS 13 开发者版就是用的 8260AC 这张网卡，我就直接依照型号买的。两张网卡放在一起，Broadcom 的网卡看起来少了几个触点。
+
+![两张网卡](https://rocka.me/static/img/IMG_20171122_203917.jpg)
+
+装好网卡后先不上后盖开机试试。Arch 里面可以完美驱动 WiFi 和蓝牙，Windows 则需要安装 [Intel 提供的蓝牙驱动](https://downloadcenter.intel.com/download/27195/Intel-Wireless-Bluetooth-for-Windows-10?product=86068) 才能够正常使用蓝牙。
+
+![lspci | grep Network](https://rocka.me/static/img/Screenshot_20171122_211840_part.png)
+
+![Get-NetAdapter | Format-List](https://rocka.me/static/img/2017-11-22.png)
+
+然后装回后盖，重新引导进入 LTS 内核，网卡一切正常。甚至还修复了另外一个困扰我很久的小问题：合上盖子休眠，再唤醒，KDE 的 Netspeed Widget 就无法正常现实网速。换张网卡居然就好了！？玄学，玄学，无话可说。
