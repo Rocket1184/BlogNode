@@ -15,7 +15,7 @@ netease_music_record_*.json
 nohup.out
 
 # Server file
-/static/*
+/static
 /*.html
 config.json
 .well-known/*
