@@ -104,7 +104,7 @@ li.nav>a:hover {
     height: 22rem;
     overflow: hidden;
     position: relative;
-    background-image: url('/static/NASABahamas.jpg');
+    background-image: url('https://rocka.me/static/img/NASABahamas.jpg');
     background-size: cover;
     background-attachment: fixed;
 }
