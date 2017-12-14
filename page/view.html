@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Rocka's Blog</title>
+    <title>[Archive] Rocka's Blog</title>
     <link rel="stylesheet" href="../style/main.css" type="text/css">
     <link rel="stylesheet" href="../style/mobile.css" type="text/css">
     <link rel="stylesheet" href="../style/animation.css" type="text/css">
@@ -44,14 +44,14 @@
 
             <div id="disqus_thread" class="stack"></div>
             <script>
-                let disqus_config = function() {
-                    this.page.url = getLink();
-                    this.page.title = '${article.title}';
-                    this.page.identifier = '${article.filename}';
-                };
-                (() => {
-					let d = document;
-            		let s = d.createElement('script');
+                (function() {
+                    var disqus_config = function() {
+                        this.page.url = getLink();
+                        this.page.title = 'Rocka\'s Blog';
+                        this.page.identifier = 'Rocka\'s Blog Index';
+                    };
+                    var d = document;
+                    var s = d.createElement('script');
                     s.src = '//rocka-blog.disqus.com/embed.js';
                     s.setAttribute('data-timestamp', +new Date());
                     (d.head || d.body).appendChild(s);
